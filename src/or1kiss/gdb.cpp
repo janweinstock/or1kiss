@@ -584,12 +584,13 @@ namespace or1kiss {
     }
 
     step_result gdb::step(unsigned int& cycles) {
-        if (m_mode == GDB_MODE_KILLED)
+        gdb_mode mode = m_mode;
+        if (mode == GDB_MODE_KILLED)
             return m_iss.step(cycles);
 
-        if (m_mode == GDB_MODE_STEPPING)
+        if (mode == GDB_MODE_STEPPING)
             cycles = 1;
-        if (m_mode == GDB_MODE_HALTED)
+        if (mode == GDB_MODE_HALTED)
             cycles = 0;
 
         switch (m_iss.step(cycles)) {
@@ -603,7 +604,7 @@ namespace or1kiss {
             break;
 
         case STEP_OK:
-            if (m_mode == GDB_MODE_STEPPING) {
+            if (mode == GDB_MODE_STEPPING) {
                 m_mode = GDB_MODE_HALTED;
                 m_rsp.send("S%02u", SIGTRAP);
             }
