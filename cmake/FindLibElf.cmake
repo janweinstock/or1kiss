@@ -16,41 +16,19 @@
  #                                                                            #
  ##############################################################################
  
-cmake_minimum_required(VERSION 3.5)
-project(or1kiss)
+find_path(LIBELF_INCLUDE_DIRS NAMES libelf.h
+          HINTS /usr/include /usr/include/libelf /opt/libelf/include)
+           
+find_library(LIBELF_LIBRARIES NAMES elf
+             HINTS /usr/lib /opt/libelf/lib LD_LIBRARY_PATH)
+             
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibElf DEFAULT_MSG
+                                  LIBELF_LIBRARIES
+                                  LIBELF_INCLUDE_DIRS)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-find_package(LibElf REQUIRED)
+mark_as_advanced(LIBELF_INCLUDE_DIRS LIBELF_LIBRARIES)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
-
-set(src "${CMAKE_CURRENT_SOURCE_DIR}/src")
-set(inc "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-set(sources
-    "${src}/or1kiss/decode.cpp"
-    "${src}/or1kiss/disasm.cpp"
-    "${src}/or1kiss/execute.cpp"
-    "${src}/or1kiss/insn.cpp"
-    "${src}/or1kiss/spr.cpp"
-    "${src}/or1kiss/mmu.cpp"
-    "${src}/or1kiss/tick.cpp"
-    "${src}/or1kiss/port.cpp"
-    "${src}/or1kiss/or1k.cpp"
-    "${src}/or1kiss/elf.cpp"
-    "${src}/or1kiss/rsp.cpp"
-    "${src}/or1kiss/gdb.cpp"
-    "${src}/or1kiss/exception.cpp"
-    "${src}/or1kiss/tracing.cpp")
-    
-include_directories(${inc} ${LIBELF_INCLUDE_DIRS})
-
-add_library(or1kiss ${sources})
-add_executable(sim ${src}/main.cpp ${src}/memory.cpp)
-target_link_libraries(sim or1kiss ${LIBELF_LIBRARIES} -pthread)
-set_target_properties(sim PROPERTIES OUTPUT_NAME "or1kiss")
-
-install(TARGETS or1kiss DESTINATION lib)
-install(DIRECTORY ${inc}/ DESTINATION include)
-install(TARGETS sim DESTINATION bin)
+#message(STATUS "LIBELF_FOUND        " ${LIBELF_FOUND})
+#message(STATUS "LIBELF_INCLUDE_DIRS " ${LIBELF_INCLUDE_DIRS})
+#message(STATUS "LIBELF_LIBRARIES    " ${LIBELF_LIBRARIES})

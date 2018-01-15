@@ -20,28 +20,26 @@
 #include <exception>
 #include <time.h>
 #include <sys/time.h>
+#include <or1kiss.h>
 
-#include "or1kiss.h"
 #include "memory.h"
 
-void usage()
-{
-    puts("Usage: sim -e binary [-b filename] [-t tracefile] ");
-    puts("[-p port] [-m memsize] [-c cycles] [-w] [-x]");
-    puts("Arguments:");
-    puts("  -e <filename> Elf binary to load and simulate");
-    puts("  -b <filename> Raw binary image to load into memory");
-    puts("  -t <filename> Trace file to store trace information");
-    puts("  -p <port>     Port number for debugger connection");
-    puts("  -m <memsize>  Simulated memory size (in bytes)");
-    puts("  -c <cycles>   Number of cycles to simulate");
-    puts("  -w            Show warnings from debugger");
-    puts("  -x            Do not use pointers for memory access");
-    puts("  -z            Disable instruction decode caching");
+void usage(const char* name) {
+    fprintf(stderr, "Usage: %s [-e file] [-b file] ", name);
+    fprintf(stderr, "[-t file] [-p port] [-m size] [-c cycles] [-w] [-x]\n");
+    fprintf(stderr, "Arguments:\n");
+    fprintf(stderr, "  -e <file>   elf binary to load into memory\n");
+    fprintf(stderr, "  -b <file>   raw binary image to load into memory\n");
+    fprintf(stderr, "  -t <file>   trace file to store trace information\n");
+    fprintf(stderr, "  -p <port>   port number for debugger connection\n");
+    fprintf(stderr, "  -m <size>   simulated memory size (in bytes)\n");
+    fprintf(stderr, "  -c <cycles> number of cycles to simulate\n");
+    fprintf(stderr, "  -w          show warnings from debugger\n");
+    fprintf(stderr, "  -x          do not use pointers for memory access\n");
+    fprintf(stderr, "  -z          disable instruction decode caching\n");
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     char* elffile = NULL;
     char* binary = NULL;
     char* tracefile = NULL;
@@ -65,14 +63,14 @@ int main(int argc, char** argv)
         case 'w': show_warn = !show_warn; break;
         case 'x': use_ptrs  = !use_ptrs; break;
         case 'z': dcsz      = or1kiss::DECODE_CACHE_OFF; break;
-        case 'h': usage(); return EXIT_SUCCESS;
-        default : usage(); return EXIT_FAILURE;
+        case 'h': usage(argv[0]); return EXIT_SUCCESS;
+        default : usage(argv[0]); return EXIT_FAILURE;
         }
     }
 
     // Check if we got a program to simulate
     if ((elffile == NULL) && (binary == NULL) && (debugport == 0)) {
-        usage();
+        usage(argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -100,12 +98,12 @@ int main(int argc, char** argv)
         timeval t1, t2;
         gettimeofday(&t1, NULL);
 
-        if (debugport == 0)
+        if (debugport == 0) {
             if (cycles > 0)
                 sim.step(cycles);
             else
                 sim.run();
-        else {
+        } else {
             or1kiss::gdb debugger(sim, debugport);
             if (elf)
                 debugger.set_elf(elf);
@@ -136,5 +134,4 @@ int main(int argc, char** argv)
         fputs("\n", stderr);
         return EXIT_FAILURE;
     }
-
 }
