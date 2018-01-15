@@ -31,18 +31,15 @@ namespace or1kiss {
         m_insn_end(0),
         m_insn_cycles(0),
         m_excl_addr(-1),
-        m_excl_data()
-    {
+        m_excl_data() {
         /* Nothing to do */
     }
 
-    port::~port()
-    {
+    port::~port() {
         /* Nothing to do */
     }
 
-    response port::exclusive_access(unsigned char* ptr, request& req)
-    {
+    response port::exclusive_access(unsigned char* ptr, request& req) {
         if (req.is_read()) {
             m_excl_addr = req.addr;
             memcpy(req.data, ptr, req.size);
@@ -58,8 +55,7 @@ namespace or1kiss {
         return RESP_SUCCESS;
     }
 
-    response port::convert_and_transact(request& req)
-    {
+    response port::convert_and_transact(request& req) {
         u64 buf;
 
         void* tmp = NULL;

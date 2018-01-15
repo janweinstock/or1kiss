@@ -20,8 +20,7 @@
 
 namespace or1kiss {
 
-    step_result or1k::advance(unsigned int cycles)
-    {
+    step_result or1k::advance(unsigned int cycles) {
         // Start simulation for a quantum of n cycles. We assume every
         // instruction takes one cycle to complete. If an instruction takes
         // longer, we might overshoot this limit.
@@ -103,8 +102,7 @@ namespace or1kiss {
         return STEP_OK;
     }
 
-    void or1k::doze()
-    {
+    void or1k::doze() {
         // Check if we are allowed to doze
         if (!(m_pmr & PMR_DME) || !(m_allow_sleep))
             return;
@@ -126,8 +124,7 @@ namespace or1kiss {
         }
     }
 
-    bool or1k::transact(request& req)
-    {
+    bool or1k::transact(request& req) {
         // Set common request properties
         req.set_supervisor(is_supervisor());
         req.cycles = 0;
@@ -203,8 +200,7 @@ namespace or1kiss {
         return true;
     }
 
-    instruction* or1k::fetch()
-    {
+    instruction* or1k::fetch() {
         // Fetch instruction from memory
         m_ireq.set_supervisor(is_supervisor());
         m_ireq.addr = m_next_pc;
@@ -308,8 +304,7 @@ namespace or1kiss {
         0x00000800, /* EX_EXTERNAL */
     };
 
-    void or1k::exception(unsigned int type, u32 addr)
-    {
+    void or1k::exception(unsigned int type, u32 addr) {
         // Some exceptions can be turned off, check in reverse priority order.
         if ((type == EX_EXTERNAL) && !(m_status & SR_IEE))
             return;
@@ -384,8 +379,7 @@ namespace or1kiss {
             m_next_pc = target;
     }
 
-    void or1k::interrupt(int id, bool set)
-    {
+    void or1k::interrupt(int id, bool set) {
         const u32 irq_mask = 1 << id;
 
         // Update status register
@@ -395,8 +389,7 @@ namespace or1kiss {
             m_pic_sr &= ~irq_mask;
     }
 
-    void or1k::update_timer()
-    {
+    void or1k::update_timer() {
         if (m_tick.enabled()) {
             m_tick.update(m_cycles - m_tick_update);
             if (m_tick.irq_pending())
@@ -405,21 +398,18 @@ namespace or1kiss {
         m_tick_update = m_cycles;
     }
 
-    void or1k::vwarn(const char* format, va_list args) const
-    {
+    void or1k::vwarn(const char* format, va_list args) const {
         vfprintf(stderr, format, args);
     }
 
-    void or1k::warn(const char* format, ...) const
-    {
+    void or1k::warn(const char* format, ...) const {
         va_list args;
         va_start(args, format);
         vwarn(format, args);
         va_end(args);
     }
 
-    bool or1k::warn(bool condition, const char* format, ...) const
-    {
+    bool or1k::warn(bool condition, const char* format, ...) const {
         if (condition) {
             va_list args;
             va_start(args, format);
@@ -430,8 +420,7 @@ namespace or1kiss {
         return condition;
     }
 
-    u64 or1k::next_breakpoint() const
-    {
+    u64 or1k::next_breakpoint() const {
         u64 next = 0xffffffffull;
         for (unsigned int i = m_breakpoints.size(); i != 0; i--) {
             u64 until = (m_breakpoints[i-1] - m_next_pc) / 4;
@@ -441,8 +430,7 @@ namespace or1kiss {
         return next + m_cycles;
     }
 
-    bool or1k::breakpoint_hit() const
-    {
+    bool or1k::breakpoint_hit() const {
         for (unsigned int i = 0; i < m_breakpoints.size(); i++) {
             if (m_breakpoints[i] == m_next_pc)
                 return true;
@@ -524,8 +512,7 @@ namespace or1kiss {
         m_user_trace_stream(NULL),
         m_file_trace_stream(NULL),
         m_fp_round_mode(0),
-        GPR()
-    {
+        GPR() {
         m_ireq.set_read();
         m_ireq.set_imem();
         m_ireq.data = &m_insn;
@@ -677,14 +664,12 @@ namespace or1kiss {
         m_decode_table[ORFPX64_CUST1 ] = &or1k::decode_na;
     }
 
-    or1k::~or1k()
-    {
+    or1k::~or1k() {
         if (m_file_trace_stream != NULL)
             delete m_file_trace_stream;
     }
 
-    step_result or1k::step(unsigned int& cycles)
-    {
+    step_result or1k::step(unsigned int& cycles) {
         // advance may overshoot the cycle budget or it might return early in
         // case a breakpoint was hit or an exit request (nop 0x1) was issued.
         // Therefore, we report back how many cycles we actually ran.
@@ -693,60 +678,51 @@ namespace or1kiss {
         return sr;
     }
 
-    step_result or1k::run(unsigned int quantum)
-    {
+    step_result or1k::run(unsigned int quantum) {
         step_result sr = STEP_OK;
         while (sr == STEP_OK)
             sr = advance(quantum);
         return sr;
     }
 
-    void or1k::insert_breakpoint(u32 addr)
-    {
+    void or1k::insert_breakpoint(u32 addr) {
         if (!stl_contains(m_breakpoints, addr))
             m_breakpoints.push_back(addr);
     }
 
-    void or1k::remove_breakpoint(u32 addr)
-    {
+    void or1k::remove_breakpoint(u32 addr) {
         if (stl_contains(m_breakpoints, addr))
             stl_remove_erase(m_breakpoints, addr);
     }
 
-    void or1k::insert_watchpoint_r(u32 addr)
-    {
+    void or1k::insert_watchpoint_r(u32 addr) {
         if (!stl_contains(m_watchpoints_r, addr))
             m_watchpoints_r.push_back(addr);
     }
 
-    void or1k::remove_watchpoint_r(u32 addr)
-    {
+    void or1k::remove_watchpoint_r(u32 addr) {
         if (stl_contains(m_watchpoints_r, addr))
             stl_remove_erase(m_watchpoints_r, addr);
     }
 
-    void or1k::insert_watchpoint_w(u32 addr)
-    {
+    void or1k::insert_watchpoint_w(u32 addr) {
         if (!stl_contains(m_watchpoints_w, addr))
             m_watchpoints_w.push_back(addr);
     }
 
-    void or1k::remove_watchpoint_w(u32 addr)
-    {
+    void or1k::remove_watchpoint_w(u32 addr) {
         if (stl_contains(m_watchpoints_w, addr))
             stl_remove_erase(m_watchpoints_w, addr);
     }
 
-    void or1k::trace(std::ostream& os)
-    {
+    void or1k::trace(std::ostream& os) {
         if (m_user_trace_stream != NULL)
             OR1KISS_ERROR("trace stream already specified");
         m_user_trace_stream = &os;
         m_trace_enabled = true;
     }
 
-    void or1k::trace(const std::string& filename)
-    {
+    void or1k::trace(const std::string& filename) {
         if (m_user_trace_stream != NULL)
             OR1KISS_ERROR("trace stream already specified");
         m_file_trace_stream = new std::ofstream(filename.c_str());

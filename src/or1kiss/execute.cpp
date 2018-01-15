@@ -20,28 +20,24 @@
 
 namespace or1kiss {
 
-    void or1k::execute_orbis32_mfspr(instruction* ci)
-    {
+    void or1k::execute_orbis32_mfspr(instruction* ci) {
         u32* rD = ci->dest;
         u32* rA = ci->src1;
         *rD = get_spr(*rA | ci->imm);
     }
 
-    void or1k::execute_orbis32_mtspr(instruction* ci)
-    {
+    void or1k::execute_orbis32_mtspr(instruction* ci) {
         u32* rB = ci->src1;
         u32* rA = ci->dest;
         set_spr(*rA | ci->imm, *rB);
     }
 
-    void or1k::execute_orbis32_movhi(instruction* ci)
-    {
+    void or1k::execute_orbis32_movhi(instruction* ci) {
         u32* rD = ci->dest;
         *rD = ci->imm;
     }
 
-    void or1k::execute_orbis32_nop(instruction* ci)
-    {
+    void or1k::execute_orbis32_nop(instruction* ci) {
         nop_mode mode = static_cast<nop_mode>(ci->imm);
         switch(mode) {
         case NOP:
@@ -50,6 +46,7 @@ namespace or1kiss {
         case NOP_EXIT:
             std::cout << "(or1kiss) exit(" << *ci->src1 << ")" << std::endl;
             m_cycles--; // last cycle is not counted
+            m_instructions--;
             m_stop_requested = true;
             break;
 
@@ -112,6 +109,7 @@ namespace or1kiss {
             std::cout << "(or1kiss) silent exit("
                       << *ci->src1 << ")" << std::endl;
             m_cycles--; // last cycle is not counted
+            m_instructions--;
             m_stop_requested = true;
             break;
 
@@ -133,8 +131,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_bf(instruction* ci)
-    {
+    void or1k::execute_orbis32_bf(instruction* ci) {
         u32 target = ci->imm + m_next_pc;
         u32 delay = (m_cpucfg & CPUCFGR_ND) ? 0 : 1;
 
@@ -142,8 +139,7 @@ namespace or1kiss {
             schedule_jump(target, delay);
     }
 
-    void or1k::execute_orbis32_bnf(instruction* ci)
-    {
+    void or1k::execute_orbis32_bnf(instruction* ci) {
         u32 target = ci->imm + m_next_pc;
         u32 delay = (m_cpucfg & CPUCFGR_ND) ? 0 : 1;
 
@@ -151,8 +147,7 @@ namespace or1kiss {
             schedule_jump(target, delay);
     }
 
-    void or1k::execute_orbis32_jump_rel(instruction* ci)
-    {
+    void or1k::execute_orbis32_jump_rel(instruction* ci) {
         u32* rL = ci->src1;
         u32* rB = ci->src2;
 
@@ -165,8 +160,7 @@ namespace or1kiss {
         schedule_jump(target, delay);
     }
 
-    void or1k::execute_orbis32_jump_abs(instruction* ci)
-    {
+    void or1k::execute_orbis32_jump_abs(instruction* ci) {
         u32* rL = ci->src1;
         u32* rB = ci->src2;
 
@@ -179,8 +173,7 @@ namespace or1kiss {
         schedule_jump(target, delay);
     }
 
-    void or1k::execute_orbis32_lwa(instruction* ci)
-    {
+    void or1k::execute_orbis32_lwa(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -194,8 +187,7 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_lw(instruction* ci)
-    {
+    void or1k::execute_orbis32_lw(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -209,8 +201,7 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_lhz(instruction* ci)
-    {
+    void or1k::execute_orbis32_lhz(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -225,8 +216,7 @@ namespace or1kiss {
             *rD &= 0xffff;
     }
 
-    void or1k::execute_orbis32_lhs(instruction* ci)
-    {
+    void or1k::execute_orbis32_lhs(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -241,8 +231,7 @@ namespace or1kiss {
             *rD = sign_extend32(*rD, 15);
     }
 
-    void or1k::execute_orbis32_lbz(instruction* ci)
-    {
+    void or1k::execute_orbis32_lbz(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -257,8 +246,7 @@ namespace or1kiss {
             *rD &= 0xff;
     }
 
-    void or1k::execute_orbis32_lbs(instruction* ci)
-    {
+    void or1k::execute_orbis32_lbs(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
@@ -273,8 +261,7 @@ namespace or1kiss {
             *rD = sign_extend32(*rD, 7);
     }
 
-    void or1k::execute_orbis32_swa(instruction* ci)
-    {
+    void or1k::execute_orbis32_swa(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
 
@@ -288,8 +275,7 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_sw(instruction* ci)
-    {
+    void or1k::execute_orbis32_sw(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
 
@@ -303,8 +289,7 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_sh(instruction* ci)
-    {
+    void or1k::execute_orbis32_sh(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
 
@@ -318,8 +303,7 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_sb(instruction* ci)
-    {
+    void or1k::execute_orbis32_sb(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
 
@@ -333,48 +317,42 @@ namespace or1kiss {
         transact(m_dreq);
     }
 
-    void or1k::execute_orbis32_extw(instruction* ci)
-    {
+    void or1k::execute_orbis32_extw(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = *rA;
     }
 
-    void or1k::execute_orbis32_exthz(instruction* ci)
-    {
+    void or1k::execute_orbis32_exthz(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = *rA & 0xffff;
     }
 
-    void or1k::execute_orbis32_exths(instruction* ci)
-    {
+    void or1k::execute_orbis32_exths(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = sign_extend32(*rA, 15);
     }
 
-    void or1k::execute_orbis32_extbz(instruction* ci)
-    {
+    void or1k::execute_orbis32_extbz(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = *rA & 0xff;
     }
 
-    void or1k::execute_orbis32_extbs(instruction* ci)
-    {
+    void or1k::execute_orbis32_extbs(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = sign_extend32(*rA, 7);
     }
 
-    void or1k::execute_orbis32_add(instruction* ci)
-    {
+    void or1k::execute_orbis32_add(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -408,8 +386,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_addc(instruction* ci)
-    {
+    void or1k::execute_orbis32_addc(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -450,8 +427,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_sub(instruction* ci)
-    {
+    void or1k::execute_orbis32_sub(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -490,8 +466,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_and(instruction* ci)
-    {
+    void or1k::execute_orbis32_and(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
         u32* rD = ci->dest;
@@ -499,8 +474,7 @@ namespace or1kiss {
         *rD = *rA & *rB;
     }
 
-    void or1k::execute_orbis32_or(instruction* ci)
-    {
+    void or1k::execute_orbis32_or(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
         u32* rD = ci->dest;
@@ -508,8 +482,7 @@ namespace or1kiss {
         *rD = *rA | *rB;
     }
 
-    void or1k::execute_orbis32_xor(instruction* ci)
-    {
+    void or1k::execute_orbis32_xor(instruction* ci) {
         u32* rD = ci->dest;
         u32* rA = ci->src1;
         u32* rB = ci->src2;
@@ -517,8 +490,7 @@ namespace or1kiss {
         *rD = *rA ^ *rB;
     }
 
-    void or1k::execute_orbis32_cmov(instruction* ci)
-    {
+    void or1k::execute_orbis32_cmov(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
         u32* rD = ci->dest;
@@ -526,24 +498,21 @@ namespace or1kiss {
         *rD = (m_status & SR_F) ? *rA : *rB;
     }
 
-    void or1k::execute_orbis32_ff1(instruction* ci)
-    {
+    void or1k::execute_orbis32_ff1(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = ffs32(*rA);
     }
 
-    void or1k::execute_orbis32_fl1(instruction* ci)
-    {
+    void or1k::execute_orbis32_fl1(instruction* ci) {
         u32* rA = ci->src1;
         u32* rD = ci->dest;
 
         *rD = fls32(*rA);
     }
 
-    void or1k::execute_orbis32_sll(instruction* ci)
-    {
+    void or1k::execute_orbis32_sll(instruction* ci) {
         u32* rD = ci->dest;
         u32* rA = ci->src1;
         u32* rB = ci->src2;
@@ -551,8 +520,7 @@ namespace or1kiss {
         *rD = *rA << (*rB & 0x1f);
     }
 
-    void or1k::execute_orbis32_srl(instruction* ci)
-    {
+    void or1k::execute_orbis32_srl(instruction* ci) {
         u32* rD = ci->dest;
         u32* rA = ci->src1;
         u32* rB = ci->src2;
@@ -560,8 +528,7 @@ namespace or1kiss {
         *rD = *rA >> (*rB & 0x1f);
     }
 
-    void or1k::execute_orbis32_sra(instruction* ci)
-    {
+    void or1k::execute_orbis32_sra(instruction* ci) {
         u32* rD = ci->dest;
         u32* rA = ci->src1;
         u32* rB = ci->src2;
@@ -570,8 +537,7 @@ namespace or1kiss {
         *rD = sign_extend32(*rA >> shift, 31 - shift);
     }
 
-    void or1k::execute_orbis32_ror(instruction* ci)
-    {
+    void or1k::execute_orbis32_ror(instruction* ci) {
         u32* rA = ci->src1;
         u32* rB = ci->src2;
         u32* rD = ci->dest;
@@ -580,8 +546,7 @@ namespace or1kiss {
         *rD = (*rA >> rotate) | (*rA << (31 - rotate));
     }
 
-    void or1k::execute_orbis32_mul(instruction* ci)
-    {
+    void or1k::execute_orbis32_mul(instruction* ci) {
         s64 src1 = static_cast<s64>(static_cast<s32>(*ci->src1));
         s64 src2 = static_cast<s64>(static_cast<s32>(*ci->src2));
 
@@ -602,8 +567,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_mulu(instruction* ci)
-    {
+    void or1k::execute_orbis32_mulu(instruction* ci) {
         u64 src1 = *ci->src1;
         u64 src2 = *ci->src2;
 
@@ -624,8 +588,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_muld(instruction* ci)
-    {
+    void or1k::execute_orbis32_muld(instruction* ci) {
         s64 src1 = static_cast<s64>(static_cast<s32>(*ci->src1));
         s64 src2 = static_cast<s64>(static_cast<s32>(*ci->src2));
 
@@ -648,8 +611,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_muldu(instruction* ci)
-    {
+    void or1k::execute_orbis32_muldu(instruction* ci) {
         u64 src1 = static_cast<u64>(*ci->src1);
         u64 src2 = static_cast<u64>(*ci->src2);
 
@@ -671,8 +633,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_div(instruction* ci)
-    {
+    void or1k::execute_orbis32_div(instruction* ci) {
         s32 src1 = static_cast<s32>(*ci->src1);
         s32 src2 = static_cast<s32>(*ci->src2);
 
@@ -691,8 +652,7 @@ namespace or1kiss {
         *ci->dest = static_cast<u32>(src1 / src2);
     }
 
-    void or1k::execute_orbis32_divu(instruction* ci)
-    {
+    void or1k::execute_orbis32_divu(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -710,8 +670,7 @@ namespace or1kiss {
         *ci->dest = src1 / src2;
     }
 
-    void or1k::execute_orbis32_sfeq(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfeq(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -721,8 +680,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfne(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfne(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -732,8 +690,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfgtu(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfgtu(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -743,8 +700,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfgeu(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfgeu(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -754,8 +710,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfltu(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfltu(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -765,8 +720,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfleu(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfleu(instruction* ci) {
         u32 src1 = *ci->src1;
         u32 src2 = *ci->src2;
 
@@ -776,8 +730,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfgts(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfgts(instruction* ci) {
         s32 src1 = static_cast<s32>(*ci->src1);
         s32 src2 = static_cast<s32>(*ci->src2);
 
@@ -787,8 +740,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfges(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfges(instruction* ci) {
         s32 src1 = static_cast<s32>(*ci->src1);
         s32 src2 = static_cast<s32>(*ci->src2);
 
@@ -798,8 +750,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sflts(instruction* ci)
-    {
+    void or1k::execute_orbis32_sflts(instruction* ci) {
         s32 src1 = static_cast<s32>(*ci->src1);
         s32 src2 = static_cast<s32>(*ci->src2);
 
@@ -809,8 +760,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_sfles(instruction* ci)
-    {
+    void or1k::execute_orbis32_sfles(instruction* ci) {
         s32 src1 = static_cast<s32>(*ci->src1);
         s32 src2 = static_cast<s32>(*ci->src2);
 
@@ -820,8 +770,7 @@ namespace or1kiss {
             m_status &= ~SR_F;
     }
 
-    void or1k::execute_orbis32_mac(instruction* ci)
-    {
+    void or1k::execute_orbis32_mac(instruction* ci) {
         s64 src1 = static_cast<s64>(static_cast<s32>(*ci->src1));
         s64 src2 = static_cast<s64>(static_cast<s32>(*ci->src2));
 
@@ -843,8 +792,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_macu(instruction* ci)
-    {
+    void or1k::execute_orbis32_macu(instruction* ci) {
         u64 src1 = static_cast<u64>(*ci->src1);
         u64 src2 = static_cast<u64>(*ci->src2);
 
@@ -865,8 +813,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_msb(instruction* ci)
-    {
+    void or1k::execute_orbis32_msb(instruction* ci) {
         s64 src1 = static_cast<s64>(static_cast<s32>(*ci->src1));
         s64 src2 = static_cast<s64>(static_cast<s32>(*ci->src2));
 
@@ -888,8 +835,7 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_msbu(instruction* ci)
-    {
+    void or1k::execute_orbis32_msbu(instruction* ci) {
         u64 src1 = static_cast<u64>(*ci->src1);
         u64 src2 = static_cast<u64>(*ci->src2);
 
@@ -910,42 +856,35 @@ namespace or1kiss {
         }
     }
 
-    void or1k::execute_orbis32_macrc(instruction* ci)
-    {
+    void or1k::execute_orbis32_macrc(instruction* ci) {
         *ci->dest = m_mac.lo;
         m_mac.lo = 0;
         m_mac.hi = 0;
     }
 
-    void or1k::execute_orbis32_sys(instruction* ci)
-    {
+    void or1k::execute_orbis32_sys(instruction* ci) {
         // Syscall id is stored in ci->imm, but not used
         exception(EX_SYSCALL);
     }
 
-    void or1k::execute_orbis32_trap(instruction* ci)
-    {
+    void or1k::execute_orbis32_trap(instruction* ci) {
         // Trap id is stored in ci->imm, but not used
         exception(EX_TRAP);
     }
 
-    void or1k::execute_orbis32_csync(instruction* ci)
-    {
+    void or1k::execute_orbis32_csync(instruction* ci) {
         // Nothing to do
     }
 
-    void or1k::execute_orbis32_msync(instruction* ci)
-    {
+    void or1k::execute_orbis32_msync(instruction* ci) {
         // Nothing to do
     }
 
-    void or1k::execute_orbis32_psync(instruction* ci)
-    {
+    void or1k::execute_orbis32_psync(instruction* ci) {
         // Nothing to do
     }
 
-    void or1k::execute_orbis32_rfe(instruction* ci)
-    {
+    void or1k::execute_orbis32_rfe(instruction* ci) {
         // Leave exception handler
         u32 target = get_spr(SPR_EPCR);
         schedule_jump(target, 0);
@@ -955,8 +894,7 @@ namespace or1kiss {
         set_spr(SPR_SR, status);
     }
 
-    void or1k::execute_orfpx32_add(instruction* ci)
-    {
+    void or1k::execute_orfpx32_add(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(ci->dest);
@@ -966,8 +904,7 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_sub(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sub(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(ci->dest);
@@ -978,8 +915,7 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_mul(instruction* ci)
-    {
+    void or1k::execute_orfpx32_mul(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(ci->dest);
@@ -990,8 +926,7 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_div(instruction* ci)
-    {
+    void or1k::execute_orfpx32_div(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(ci->dest);
@@ -1002,8 +937,7 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_rem(instruction* ci)
-    {
+    void or1k::execute_orfpx32_rem(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(ci->dest);
@@ -1014,8 +948,7 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_madd(instruction* ci)
-    {
+    void or1k::execute_orfpx32_madd(instruction* ci) {
         float* src1 = reinterpret_cast<float*>(ci->src1);
         float* src2 = reinterpret_cast<float*>(ci->src2);
         float* dest = reinterpret_cast<float*>(&m_fmac.lo);
@@ -1026,24 +959,21 @@ namespace or1kiss {
         reset_fp_flags(*dest);
     }
 
-    void or1k::execute_orfpx32_itof(instruction* ci)
-    {
+    void or1k::execute_orfpx32_itof(instruction* ci) {
         u32* rA = ci->src1;
         float*    rD = reinterpret_cast<float*>(ci->dest);
 
         *rD = *rA;
     }
 
-    void or1k::execute_orfpx32_ftoi(instruction* ci)
-    {
+    void or1k::execute_orfpx32_ftoi(instruction* ci) {
         float*    rA = reinterpret_cast<float*>(ci->src1);
         u32* rD = ci->dest;
 
         *rD = *rA;
     }
 
-    void or1k::execute_orfpx32_sfeq(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sfeq(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1052,8 +982,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx32_sfne(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sfne(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1062,8 +991,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx32_sfgt(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sfgt(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1072,8 +1000,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx32_sfge(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sfge(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1082,8 +1009,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx32_sflt(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sflt(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1092,8 +1018,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx32_sfle(instruction* ci)
-    {
+    void or1k::execute_orfpx32_sfle(instruction* ci) {
         float* rA = reinterpret_cast<float*>(ci->src1);
         float* rB = reinterpret_cast<float*>(ci->src2);
 
@@ -1102,8 +1027,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_add(instruction* ci)
-    {
+    void or1k::execute_orfpx64_add(instruction* ci) {
         double_register src1, src2, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1120,8 +1044,7 @@ namespace or1kiss {
         reset_fp_flags(dest.d);
     }
 
-    void or1k::execute_orfpx64_sub(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sub(instruction* ci) {
         double_register src1, src2, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1138,8 +1061,7 @@ namespace or1kiss {
         reset_fp_flags(dest.d);
     }
 
-    void or1k::execute_orfpx64_mul(instruction* ci)
-    {
+    void or1k::execute_orfpx64_mul(instruction* ci) {
         double_register src1, src2, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1156,8 +1078,7 @@ namespace or1kiss {
         reset_fp_flags(dest.d);
     }
 
-    void or1k::execute_orfpx64_div(instruction* ci)
-    {
+    void or1k::execute_orfpx64_div(instruction* ci) {
         double_register src1, src2, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1174,8 +1095,7 @@ namespace or1kiss {
         reset_fp_flags(dest.d);
     }
 
-    void or1k::execute_orfpx64_rem(instruction* ci)
-    {
+    void or1k::execute_orfpx64_rem(instruction* ci) {
         double_register src1, src2, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1192,8 +1112,7 @@ namespace or1kiss {
         reset_fp_flags(dest.d);
     }
 
-    void or1k::execute_orfpx64_madd(instruction* ci)
-    {
+    void or1k::execute_orfpx64_madd(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1207,8 +1126,7 @@ namespace or1kiss {
         reset_fp_flags(m_fmac.d);
     }
 
-    void or1k::execute_orfpx64_itof(instruction* ci)
-    {
+    void or1k::execute_orfpx64_itof(instruction* ci) {
         double_register src1, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1219,8 +1137,7 @@ namespace or1kiss {
         *(ci->dest + 0) = dest.lo;
     }
 
-    void or1k::execute_orfpx64_ftoi(instruction* ci)
-    {
+    void or1k::execute_orfpx64_ftoi(instruction* ci) {
         double_register src1, dest;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1231,8 +1148,7 @@ namespace or1kiss {
         *(ci->dest + 0) = dest.lo;
     }
 
-    void or1k::execute_orfpx64_sfeq(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sfeq(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1244,8 +1160,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_sfne(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sfne(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1257,8 +1172,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_sfgt(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sfgt(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1270,8 +1184,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_sfge(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sfge(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1283,8 +1196,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_sflt(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sflt(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);
@@ -1296,8 +1208,7 @@ namespace or1kiss {
             m_status |= SR_F;
     }
 
-    void or1k::execute_orfpx64_sfle(instruction* ci)
-    {
+    void or1k::execute_orfpx64_sfle(instruction* ci) {
         double_register src1, src2;
         src1.hi = *(ci->src1 + 1);
         src1.lo = *(ci->src1 + 0);

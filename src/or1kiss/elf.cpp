@@ -28,8 +28,7 @@ namespace or1kiss {
         m_virt_addr(symbol->st_value),
         m_phys_addr(symbol->st_value),
         m_name(name),
-        m_type()
-    {
+        m_type() {
         unsigned char type = ELF32_ST_TYPE(symbol->st_info);
         switch (type) {
         case STT_OBJECT : m_type = ELF_SYM_OBJECT;   break;
@@ -38,8 +37,7 @@ namespace or1kiss {
         }
     }
 
-    elf_symbol::~elf_symbol()
-    {
+    elf_symbol::~elf_symbol() {
         // Nothing to do
     }
 
@@ -51,8 +49,7 @@ namespace or1kiss {
         m_phys_addr(),
         m_flag_alloc(),
         m_flag_write(),
-        m_flag_exec()
-    {
+        m_flag_exec() {
         Elf32_Ehdr* ehdr = elf32_getehdr(elf);
         Elf32_Phdr* phdr = elf32_getphdr(elf);
         Elf32_Shdr* shdr = elf32_getshdr(scn);
@@ -97,13 +94,11 @@ namespace or1kiss {
         }
     }
 
-    elf_section::~elf_section()
-    {
+    elf_section::~elf_section() {
         delete [] m_data;
     }
 
-    void elf_section::load(port* p, bool verbose)
-    {
+    void elf_section::load(port* p, bool verbose) {
         if (!m_flag_alloc)
             return;
 
@@ -140,8 +135,7 @@ namespace or1kiss {
         m_endianess(),
         m_entry(),
         m_sections(),
-        m_symbols()
-    {
+        m_symbols() {
         if (elf_version(EV_CURRENT) == EV_NONE)
             OR1KISS_ERROR(elf_errmsg(-1));
 
@@ -214,8 +208,7 @@ namespace or1kiss {
         close(fd);
     }
 
-    elf::~elf()
-    {
+    elf::~elf() {
         for (unsigned int i = 0; i < m_symbols.size(); i++)
             delete m_symbols[i];
 
@@ -223,8 +216,7 @@ namespace or1kiss {
             delete m_sections[i];
     }
 
-    u64 elf::to_phys(u64 virt_addr) const
-    {
+    u64 elf::to_phys(u64 virt_addr) const {
         for (unsigned int i = 0; i < m_sections.size(); i++) {
             elf_section* section = m_sections[i];
             if (section->contains(virt_addr))
@@ -234,8 +226,7 @@ namespace or1kiss {
         return virt_addr;
     }
 
-    void elf::load(port* p, bool verbose)
-    {
+    void elf::load(port* p, bool verbose) {
         if (verbose)
             fprintf(stderr, "loading elf from '%s'\n", m_filename.c_str());
 
@@ -250,8 +241,7 @@ namespace or1kiss {
             fprintf(stderr, "loading elf done\n");
     }
 
-    void elf::dump()
-    {
+    void elf::dump() {
         fprintf(stderr, "%s has %zd sections:\n", m_filename.c_str(),
                 m_sections.size());
 
@@ -292,40 +282,35 @@ namespace or1kiss {
         }
     }
 
-    elf_section* elf::find_section(const string& name) const
-    {
+    elf_section* elf::find_section(const string& name) const {
         for (unsigned int i = 0; i < m_sections.size(); i++)
             if (m_sections[i]->get_name() == name)
                 return m_sections[i];
         return NULL;
     }
 
-    elf_section* elf::find_section(u64 virt_addr) const
-    {
+    elf_section* elf::find_section(u64 virt_addr) const {
         for (unsigned int i = 0; i < m_sections.size(); i++)
             if (m_sections[i]->get_virt_addr() == virt_addr)
                 return m_sections[i];
         return NULL;
     }
 
-    elf_symbol* elf::find_symbol(const string& name) const
-    {
+    elf_symbol* elf::find_symbol(const string& name) const {
         for (unsigned int i = 0; i < m_symbols.size(); i++)
             if (m_symbols[i]->get_name() == name)
                 return m_symbols[i];
         return NULL;
     }
 
-    elf_symbol* elf::find_symbol(u64 virt_addr) const
-    {
+    elf_symbol* elf::find_symbol(u64 virt_addr) const {
         for (unsigned int i = 0; i < m_symbols.size(); i++)
             if (m_symbols[i]->get_virt_addr() == virt_addr)
                 return m_symbols[i];
         return NULL;
     }
 
-    elf_symbol* elf::find_function(u64 virt_addr) const
-    {
+    elf_symbol* elf::find_function(u64 virt_addr) const {
         // Symbols are sorted by virtual address, so the last one with a
         // smaller address than what we are looking for is our match.
         elf_symbol* result = NULL;
