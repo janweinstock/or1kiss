@@ -535,7 +535,7 @@ namespace or1kiss {
         void execute_orbis32_div(instruction*);
         void execute_orbis32_divu(instruction*);
 
-        /* Comparision */
+        /* Comparison */
         void execute_orbis32_sfeq(instruction*);
         void execute_orbis32_sfne(instruction*);
         void execute_orbis32_sfgtu(instruction*);
@@ -601,81 +601,61 @@ namespace or1kiss {
     public:
         u32 GPR[32];
 
-        inline bool is_dmmu_active()      const { return m_status & SR_DME; }
-        inline bool is_immu_active()      const { return m_status & SR_IME; }
-        inline bool is_supervisor()       const { return m_status & SR_SM;  }
-        inline bool is_ext_irq_enabled()  const { return m_status & SR_IEE; }
-        inline bool is_tick_irq_enabled() const { return m_status & SR_TEE; }
+        bool is_dmmu_active()      const { return m_status & SR_DME; }
+        bool is_immu_active()      const { return m_status & SR_IME; }
+        bool is_supervisor()       const { return m_status & SR_SM;  }
+        bool is_ext_irq_enabled()  const { return m_status & SR_IEE; }
+        bool is_tick_irq_enabled() const { return m_status & SR_TEE; }
 
-        inline bool is_interrupt_pending() const {
-            return m_pic_sr & m_pic_mr;
-        }
+        bool is_interrupt_pending() const;
+        bool is_interrupt_pending(int no) const;
+        bool is_exception_pending() const;
 
-        inline bool is_interrupt_pending(int no) const {
-            return (m_pic_sr & m_pic_mr) & (1 << no);
-        }
+        bool is_sleep_allowed() const   { return m_allow_sleep; }
+        void allow_sleep(bool b = true) { m_allow_sleep = b; }
+        bool is_sleeping() const;
 
-        inline bool is_exception_pending() const {
-            return is_interrupt_pending() || m_tick.irq_pending();
-        }
+        clock_t get_clock() const { return m_clock; }
+        void set_clock(u32 clk)   { m_clock = clk; }
 
-        inline bool is_sleep_allowed() const   { return m_allow_sleep; }
-        inline void allow_sleep(bool b = true) { m_allow_sleep = b; }
+        u32 get_core_id()  const { return m_core_id; }
+        void set_core_id(u32 id) { m_core_id = id; }
+        u32 get_numcores() const { return m_num_cores; }
+        void set_numcores(u32 n) { m_num_cores = n; }
 
-        inline bool is_sleeping() const {
-            return is_sleep_allowed() &&
-                   !is_exception_pending() &&
-                   (m_pmr & PMR_DME);
-        }
+        u64 get_num_lwa() const { return m_num_excl_read; }
+        u64 get_num_swa() const { return m_num_excl_write; }
+        u64 get_num_swa_failed() const;
+        void reset_exclusive();
 
-        inline clock_t get_clock() const { return m_clock; }
-        inline void set_clock(u32 clk)   { m_clock = clk; }
+        bool is_decode_cache_off() const;
 
-        inline u32 get_core_id()  const { return m_core_id; }
-        inline void set_core_id(u32 id) { m_core_id = id; }
-        inline u32 get_numcores() const { return m_num_cores; }
-        inline void set_numcores(u32 n) { m_num_cores = n; }
+        u64 get_num_cycles()       const { return m_cycles; }
+        u64 get_num_instructions() const { return m_instructions; }
+        u64 get_num_compiles()     const { return m_compiles; }
+        u64 get_num_sleep_cycles() const { return m_sleep_cycles; }
 
-        inline u64 get_num_lwa() const { return m_num_excl_read; }
-        inline u64 get_num_swa() const { return m_num_excl_write; }
-        inline u64 get_num_swa_failed() const {
-            return m_num_excl_failed;
-        }
+        float get_decode_cache_hit_rate() const;
 
-        inline void reset_exclusive() {
-            m_num_excl_read = m_num_excl_write = m_num_excl_failed = 0;
-        }
+        void reset_cycles()       { m_cycles = 0; }
+        void reset_instructions() { m_instructions = 0; }
+        void reset_compiles()     { m_compiles = 0; }
+        void reset_sleep_cycles() { m_sleep_cycles = 0; }
 
-        inline bool is_decode_cache_off() const {
-            return m_decode_cache.is_enabled();
-        }
+        void trigger_tlb_miss(u32 addr);
 
-        inline u64 get_num_cycles()       const { return m_cycles; }
-        inline u64 get_num_instructions() const { return m_instructions; }
-        inline u64 get_num_compiles()     const { return m_compiles; }
-        inline u64 get_num_sleep_cycles() const { return m_sleep_cycles; }
+        void set_insn_ptr(unsigned char* ptr,
+                          u32 addr_start = 0x00000000,
+                          u32 addr_end   = 0xffffffff,
+                          u64 cycles = 0);
+        void set_data_ptr(unsigned char* ptr,
+                          u32 addr_start = 0x00000000,
+                          u32 addr_end   = 0xffffffff,
+                          u64 cycles = 0);
 
-        inline float get_decode_cache_hit_rate() const;
-
-        inline void reset_cycles()       { m_cycles = 0; }
-        inline void reset_instructions() { m_instructions = 0; }
-        inline void reset_compiles()     { m_compiles = 0; }
-        inline void reset_sleep_cycles() { m_sleep_cycles = 0; }
-
-        inline void trigger_tlb_miss(u32 addr);
-
-        inline void set_insn_ptr(unsigned char* ptr,
-                                 u32 addr_start = 0x00000000,
-                                 u32 addr_end   = 0xffffffff,
-                                 u64 cycles = 0);
-        inline void set_data_ptr(unsigned char* ptr,
-                                 u32 addr_start = 0x00000000,
-                                 u32 addr_end   = 0xffffffff,
-                                 u64 cycles = 0);
-
-        inline port* get_port() { return m_port; }
-        inline mmu*  get_dmmu() { return &m_dmmu; }
-        inline mmu*  get_immu() { return &m_immu; }
+        port* get_port() { return m_port; }
+        mmu*  get_dmmu() { return &m_dmmu; }
+        mmu*  get_immu() { return &m_immu; }
 
         void interrupt(int, bool);
 
@@ -697,16 +677,47 @@ namespace or1kiss {
         void insert_watchpoint_w(u32 addr);
         void remove_watchpoint_w(u32 addr);
 
-        inline const std::vector<u32>& get_breakpoints() const;
-        inline       std::vector<u32>  get_breakpoints();
-        inline const std::vector<u32>& get_watchpoints_r() const;
-        inline       std::vector<u32>  get_watchpoints_r();
-        inline const std::vector<u32>& get_watchpoints_w() const;
-        inline       std::vector<u32>  get_watchpoints_w();
+        const vector<u32>& get_breakpoints() const;
+        const vector<u32>& get_watchpoints_r() const;
+        const vector<u32>& get_watchpoints_w() const;
+
+        vector<u32>  get_breakpoints();
+        vector<u32>  get_watchpoints_r();
+        vector<u32>  get_watchpoints_w();
 
         void trace(ostream& = std::cout);
         void trace(const string&);
     };
+
+    inline bool or1k::is_interrupt_pending() const {
+        return m_pic_sr & m_pic_mr;
+    }
+
+    inline bool or1k::is_interrupt_pending(int no) const {
+        return (m_pic_sr & m_pic_mr) & (1 << no);
+    }
+
+    inline bool or1k::is_exception_pending() const {
+        return is_interrupt_pending() || m_tick.irq_pending();
+    }
+
+    inline bool or1k::is_sleeping() const {
+        return is_sleep_allowed() &&
+               !is_exception_pending() &&
+               (m_pmr & PMR_DME);
+    }
+
+    inline u64 or1k::get_num_swa_failed() const {
+        return m_num_excl_failed;
+    }
+
+    inline void or1k::reset_exclusive() {
+        m_num_excl_read = m_num_excl_write = m_num_excl_failed = 0;
+    }
+
+    inline bool or1k::is_decode_cache_off() const {
+        return m_decode_cache.is_enabled();
+    }
 
     inline void or1k::setup_fp_round_mode() {
         // Setup rounding mode

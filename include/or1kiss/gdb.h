@@ -35,10 +35,6 @@
 
 namespace or1kiss {
 
-    class gdb;
-
-    typedef void (gdb::*gdb_handler)(const char*);
-
     enum gdb_mode {
         GDB_MODE_HALTED,
         GDB_MODE_STEPPING,
@@ -57,6 +53,8 @@ namespace or1kiss {
         bool      m_show_warnings;
         gdb_mode  m_mode;
         pthread_t m_thread;
+
+        typedef void (gdb::*gdb_handler)(const char*);
 
         std::map<u32, u32> m_tlb;
         std::map<char, gdb_handler> m_handler;
@@ -105,20 +103,19 @@ namespace or1kiss {
         gdb(or1k& sim, elf* e, unsigned short port);
         virtual ~gdb();
 
-        inline bool is_connected() const { return m_rsp.is_open(); }
+        bool is_connected() const { return m_rsp.is_open(); }
 
-        inline elf* get_elf()       { return m_elf; }
-        inline void set_elf(elf* e) { m_elf = e; }
+        elf* get_elf()       { return m_elf; }
+        void set_elf(elf* e) { m_elf = e; }
 
-        inline void warnings(bool b) { m_show_warnings = b; }
-        inline void show_warnings()  { m_show_warnings = true; }
-        inline void hide_warnings()  { m_show_warnings = false; }
+        void show_warnings(bool show = true) { m_show_warnings = show; }
+        void hide_warnings() { m_show_warnings = false; }
 
-        inline gdb_mode get_mode() const { return m_mode; }
+        gdb_mode get_mode() const { return m_mode; }
 
-        inline       std::vector<u32>  get_breakpoints();
-        inline       std::vector<u32>  get_watchpoints_r();
-        inline       std::vector<u32>  get_watchpoints_w();
+        vector<u32> get_breakpoints();
+        vector<u32> get_watchpoints_r();
+        vector<u32> get_watchpoints_w();
 
         void insert_breakpoint(u32);
         void remove_breakpoint(u32);
@@ -126,7 +123,7 @@ namespace or1kiss {
         void remove_watchpoint(u32);
 
         step_result step(unsigned int& n);
-        step_result run(unsigned int quantum = ~0u);
+        step_result run(unsigned int quantum = 100u);
 
         void listen();
     };

@@ -252,6 +252,7 @@ namespace or1kiss {
 
             case RESP_FAILED:
                 OR1KISS_ERROR("invalid response from port");
+                break;
 
             case RESP_SUCCESS:
             default:

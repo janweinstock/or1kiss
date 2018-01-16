@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
             or1kiss::gdb debugger(sim, debugport);
             if (elf)
                 debugger.set_elf(elf);
-            debugger.warnings(show_warn);
+            debugger.show_warnings(show_warn);
             if (cycles > 0)
                 debugger.step(cycles);
             else
