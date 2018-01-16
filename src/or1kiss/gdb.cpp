@@ -73,11 +73,6 @@ namespace or1kiss {
         if (!m_iss.is_dmmu_active() && !m_iss.is_immu_active()) {
             if (m_elf && addr >= 0xc0000000) // apply ELF section mapping
                 addr = m_elf->to_phys(addr);
-#if 1
-            if (addr >= 0xc0000000)
-                addr -= 0xc0000000;
-#endif
-
             return true;
         }
 
@@ -91,10 +86,6 @@ namespace or1kiss {
         if (m_iss.is_dmmu_active() &&
             m_iss.get_dmmu()->translate(req) == MMU_OKAY) {
             addr = req.addr;
-#if 1
-            if (addr >= 0xc0000000)
-                addr -= 0xc0000000;
-#endif
             return true;
         }
 
@@ -118,12 +109,6 @@ namespace or1kiss {
             addr = req.addr;
             return true;
         }
-#endif
-
-#if 1
-        if (addr >= 0xc0000000)
-            addr -= 0xc0000000;
-        return true;
 #endif
         return false;
     }

@@ -16,47 +16,17 @@
  #                                                                            #
  ##############################################################################
 
-project(or1kiss)
-cmake_minimum_required(VERSION 3.5)
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR or1k)
+set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
-option(BUILD_SW "Build sample software, requires or1k-elf-gcc" OFF)
+set(TOOLCHAIN_PREFIX or1k-elf-)
+set(CMAKE_C_COMPILER   ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-find_package(LibElf REQUIRED)
+set(CMAKE_C_FLAGS "-mhard-mul -mhard-div -mhard-float -O3 ${CMAKE_C_FLAGS}")
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
-
-set(src "${CMAKE_CURRENT_SOURCE_DIR}/src")
-set(inc "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-set(sources
-    "${src}/or1kiss/decode.cpp"
-    "${src}/or1kiss/disasm.cpp"
-    "${src}/or1kiss/execute.cpp"
-    "${src}/or1kiss/insn.cpp"
-    "${src}/or1kiss/spr.cpp"
-    "${src}/or1kiss/mmu.cpp"
-    "${src}/or1kiss/tick.cpp"
-    "${src}/or1kiss/port.cpp"
-    "${src}/or1kiss/or1k.cpp"
-    "${src}/or1kiss/elf.cpp"
-    "${src}/or1kiss/rsp.cpp"
-    "${src}/or1kiss/gdb.cpp"
-    "${src}/or1kiss/exception.cpp"
-    "${src}/or1kiss/tracing.cpp")
-    
-include_directories(${inc} ${LIBELF_INCLUDE_DIRS})
-
-add_library(or1kiss ${sources})
-add_executable(sim ${src}/main.cpp ${src}/memory.cpp)
-target_link_libraries(sim or1kiss ${LIBELF_LIBRARIES} -pthread)
-set_target_properties(sim PROPERTIES OUTPUT_NAME "or1kiss")
-
-install(TARGETS or1kiss DESTINATION lib)
-install(DIRECTORY ${inc}/ DESTINATION include)
-install(TARGETS sim DESTINATION bin)
-
-if(BUILD_SW)
-    add_subdirectory(sw)
-endif()
+add_subdirectory(coremark)
+add_subdirectory(dhrystone)
+add_subdirectory(whetstone)
