@@ -234,7 +234,7 @@ namespace or1kiss {
             m_sections[i]->load(p, verbose);
 
         if (m_entry != 0x100)
-            fprintf(stderr, "invalid entry point 0x%08"PRIx64" ignored\n",
+            fprintf(stderr, "invalid entry point 0x%08" PRIx64 " ignored\n",
                     m_entry);
 
         if (verbose)
@@ -248,7 +248,7 @@ namespace or1kiss {
         static const char* endstr[] = { "little", "big", "unknown" };
 
         fprintf(stderr, "name     : %s\n", m_filename.c_str());
-        fprintf(stderr, "entry    : 0x%08"PRIx64"\n", m_entry);
+        fprintf(stderr, "entry    : 0x%08" PRIx64 "\n", m_entry);
         fprintf(stderr, "endian   : %s\n", endstr[m_endianess]);
         fprintf(stderr, "sections : %zd\n", m_sections.size());
         fprintf(stderr, "symbols  : %zd\n", m_symbols.size());
@@ -259,9 +259,9 @@ namespace or1kiss {
         for (unsigned int i = 0; i < m_sections.size(); i++) {
             elf_section* sec = m_sections[i];
             fprintf(stderr, "[%2d] ", i);
-            fprintf(stderr, "0x%08"PRIx64" ", sec->get_virt_addr());
-            fprintf(stderr, "0x%08"PRIx64" ", sec->get_phys_addr());
-            fprintf(stderr, "0x%08"PRIx32" ", sec->get_size());
+            fprintf(stderr, "0x%08" PRIx64 " ", sec->get_virt_addr());
+            fprintf(stderr, "0x%08" PRIx64 " ", sec->get_phys_addr());
+            fprintf(stderr, "0x%08" PRIx32 " ", sec->get_size());
             fprintf(stderr, "%s\n", sec->get_name().c_str());
         }
 
@@ -275,8 +275,8 @@ namespace or1kiss {
                 continue;
 
             fprintf(stderr, "[%5d] ", i);
-            fprintf(stderr, "0x%08"PRIx64" ", sym->get_virt_addr());
-            fprintf(stderr, "0x%08"PRIx64" ", sym->get_phys_addr());
+            fprintf(stderr, "0x%08" PRIx64 " ", sym->get_virt_addr());
+            fprintf(stderr, "0x%08" PRIx64 " ", sym->get_phys_addr());
             fprintf(stderr, "%s ", typestr[sym->get_type()]);
             fprintf(stderr, "%s\n", sym->get_name().c_str());
         }

@@ -36,6 +36,8 @@ namespace or1kiss {
     using std::min;
     using std::max;
     using std::numeric_limits;
+    using std::isnan;
+    using std::isinf;
 
     using std::pair;
     using std::string;

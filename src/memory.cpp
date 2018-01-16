@@ -31,22 +31,22 @@ memory::~memory() {
 }
 
 bool memory::load(const char* filename) {
-    std::FILE* image_file = std::fopen(filename, "rb");
-    if (image_file == NULL)
+    std::ifstream file(filename, std::ios::binary | std::ios::ate);
+    if (!file.is_open())
         return false;
 
-    std::fread(m_memory, 1, m_size, image_file);
-    bool error = std::ferror(image_file);
-    std::fclose(image_file);
-
-    return !error;
+    size_t fsize = file.tellg();
+    fsize = std::min(fsize, m_size);
+    file.seekg(0, std::ios::beg);
+    file.read((char*)m_memory, fsize);
+    return true;
 }
 
 or1kiss::response memory::transact(const or1kiss::request& req) {
     if ((req.addr + req.size) > m_size) {
         if (!req.is_debug()) {
             fprintf(stderr,
-                    "(memory) bus error at address 0x%08"PRIx32"\n",
+                    "(memory) bus error at address 0x%08" PRIx32 "\n",
                     req.addr);
             fflush(stderr);
             std::exit(-1);

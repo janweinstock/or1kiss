@@ -120,8 +120,8 @@ int main(int argc, char** argv) {
         double duration = sim.get_num_cycles() / (double)sim.get_clock();
 
         printf("simulation exit\n");
-        printf("# cycles       : %"PRId64"\n", sim.get_num_cycles());
-        printf("# instructions : %"PRId64"\n", sim.get_num_instructions());
+        printf("# cycles       : %" PRId64 "\n", sim.get_num_cycles());
+        printf("# instructions : %" PRId64 "\n", sim.get_num_instructions());
         printf("# dcc hit rate : %f\n", sim.get_decode_cache_hit_rate());
         printf("# sim duration : %.4f seconds\n", duration);
         printf("# sim speed    : %.4f MIPS\n", mips);

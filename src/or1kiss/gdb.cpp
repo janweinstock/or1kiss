@@ -51,7 +51,7 @@ namespace or1kiss {
         req.size = size;
 
         if (m_port->convert_and_transact(req) != RESP_SUCCESS)
-            OR1KISS_ERROR("cannot read memory at 0x%08"PRIx32" (%d bytes)",
+            OR1KISS_ERROR("cannot read memory at 0x%08" PRIx32 " (%d bytes)",
                           phys_addr, size);
     }
 
@@ -64,7 +64,7 @@ namespace or1kiss {
         req.set_addr_and_data(phys_addr, ptr, size);
 
         if (m_port->convert_and_transact(req) != RESP_SUCCESS)
-            OR1KISS_ERROR("cannot write memory at 0x%08"PRIx32" (%d bytes)",
+            OR1KISS_ERROR("cannot write memory at 0x%08" PRIx32 " (%d bytes)",
                           phys_addr, size);
     }
 
@@ -124,7 +124,7 @@ namespace or1kiss {
 
         // Translate address and cache result
         if (!translate(addr)) {
-            OR1KISS_ERROR("translation of address 0x%08"PRIx32" failed", addr);
+            OR1KISS_ERROR("translation of address 0x%08" PRIx32 " failed", addr);
             return addr;
         }
 
@@ -526,7 +526,7 @@ namespace or1kiss {
         m_detached(false),
         m_show_warnings(false),
         m_mode(GDB_MODE_HALTED),
-        m_thread(NULL),
+        m_thread(),
         m_tlb(),
         m_handler() {
         init();
@@ -540,7 +540,7 @@ namespace or1kiss {
         m_detached(false),
         m_show_warnings(false),
         m_mode(GDB_MODE_HALTED),
-        m_thread(NULL),
+        m_thread(),
         m_tlb(),
         m_handler() {
         init();

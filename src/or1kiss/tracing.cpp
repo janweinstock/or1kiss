@@ -32,7 +32,7 @@ namespace or1kiss {
         u32 trace_insn = insn->insn;
 
         n += snprintf(buffer + n, sizeof(buffer) - n,
-                      "%c %08"PRIx64": %08"PRIx32" %-24s",
+                      "%c %08" PRIx64 ": %08" PRIx32 " %-24s",
                       trace_mode, trace_addr, trace_insn,
                       disassemble(trace_insn).c_str());
 
@@ -46,23 +46,23 @@ namespace or1kiss {
         }
         case ORBIS32_SW:
             n += snprintf(buffer + n, sizeof(buffer) - n,
-                          "[%08"PRIx32"] = %08"PRIx32"%1s",
+                          "[%08" PRIx32 "] = %08" PRIx32 "%1s",
                           m_trace_addr, *insn->src2, " ");
             break;
         case ORBIS32_SH:
             n += snprintf(buffer + n, sizeof(buffer) - n,
-                          "[%08"PRIx32"] = %04"PRIx32"%5s",
+                          "[%08" PRIx32 "] = %04" PRIx32 "%5s",
                           m_trace_addr, *insn->src2, " ");
             break;
         case ORBIS32_SB:
             n += snprintf(buffer + n, sizeof(buffer) - n,
-                          "[%08"PRIx32"] = %02"PRIx32"%7s",
+                          "[%08" PRIx32 "] = %02" PRIx32 "%7s",
                           m_trace_addr, *insn->src2, " ");
             break;
         default:
             if ((insn->dest >= GPR) && (insn->dest < (GPR + sizeof(GPR)))) {
                 n += snprintf(buffer + n, sizeof(buffer) - n,
-                              "r%-10"PRIdPTR"= %08"PRIx32" ",
+                              "r%-10" PRIdPTR "= %08" PRIx32 " ",
                               insn->dest - GPR, *insn->dest);
             } else
                 n += snprintf(buffer + n, sizeof(buffer) - n, "%22s", " ");
