@@ -16,6 +16,6 @@
  #                                                                            #
  ##############################################################################
 
-add_definitions(-DTIME -O3)
+add_definitions(-DTIME -Wno-implicit-function-declaration -Wno-implicit-int)
 add_executable(dhrystone dhry_1.c dhry_2.c gettimeofday.c)
 install(TARGETS dhrystone DESTINATION sw)
