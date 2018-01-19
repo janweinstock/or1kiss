@@ -35,7 +35,7 @@ private:
     memory(const memory&);
 
 public:
-    memory(unsigned int size);
+    memory(uint64_t size);
     virtual ~memory();
 
     inline unsigned char* get_ptr()  const { return m_memory; }

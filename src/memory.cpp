@@ -18,11 +18,11 @@
 
 #include "memory.h"
 
-memory::memory(unsigned int size):
+memory::memory(uint64_t size):
     or1kiss::port(or1kiss::ENDIAN_BIG),
     m_size(size),
     m_memory(new unsigned char [size]()) {
-    set_data_ptr(m_memory, 0, size - 1, 0);
+    set_data_ptr(m_memory, 0, size - 1, 1);
     set_insn_ptr(m_memory, 0, size - 1, 0);
 }
 
@@ -35,7 +35,7 @@ bool memory::load(const char* filename) {
     if (!file.is_open())
         return false;
 
-    size_t fsize = file.tellg();
+    uint64_t fsize = file.tellg();
     fsize = std::min(fsize, m_size);
     file.seekg(0, std::ios::beg);
     file.read((char*)m_memory, fsize);
