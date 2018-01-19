@@ -9,10 +9,11 @@ compiler:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libelf-dev cmake3
+  - cmake --version
 
 before_script:
   - mkdir BUILD
   - cd BUILD
-  - cmake3 ..
+  - cmake ..
 
 script: make
