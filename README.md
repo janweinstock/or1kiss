@@ -8,6 +8,8 @@ achieves around 10-50 MIPS. While the repository also privides a standalone
 simulator, `or1kiss` has been primarily designed to be embedded into system
 level simulators, e.g. SystemC and TLM based virtual platforms.
 
+[![Build Status](https://travis-ci.org/janweinstock/or1kiss.svg?branch=master)](https://travis-ci.org/janweinstock/or1kiss)
+
 ----
 ## Build & Installation
 Currently, only Linux builds are supported. OSX builds may be possible, but
@@ -181,3 +183,9 @@ static inline void trace_disable() {
     asm volatile ("l.nop 0x9");
 }
 ```
+
+----
+## License
+
+This project is licensed under the Apache-2.0 license - see the
+[LICENSE](LICENSE) file for details.
