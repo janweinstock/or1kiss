@@ -18,4 +18,8 @@
 
 add_definitions(-DTIME -Wno-implicit-function-declaration -Wno-implicit-int)
 add_executable(dhrystone dhry_1.c dhry_2.c gettimeofday.c)
+
+add_test(NAME dhrystone COMMAND ../../or1kiss -e dhrystone.elf)
+set_tests_properties(dhrystone PROPERTIES TIMEOUT 300)
+
 install(TARGETS dhrystone DESTINATION sw)

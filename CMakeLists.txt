@@ -61,5 +61,6 @@ if(BUILD_SIM)
 endif()
 
 if(BUILD_SW)
+    enable_testing()
     add_subdirectory(sw)
 endif()
