@@ -21,9 +21,9 @@ will require some manual work. Windows is currently not supported.
 
 2. Chose directories for building and deployment:
     ```
-    <source-dir>  location of your repo copy,     e.g., /home/jan/or1kiss
-    <build-dir>   location to store object files, e.g., /home/jan/or1kiss/BUILD
-    <install-dir> output directory for binaries,  e.g., /opt/or1kiss
+    <source-dir>  location of your repo copy,     e.g. /home/jan/or1kiss
+    <build-dir>   location to store object files, e.g. /home/jan/or1kiss/BUILD
+    <install-dir> output directory for binaries,  e.g. /opt/or1kiss
     ```
 
 3. Configure and build the project using `cmake`. Two config options exist:
