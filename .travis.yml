@@ -5,6 +5,11 @@ language: c++
 
 compiler:
   - gcc
+  - clang
+
+env:
+  - BUILD_TYPE=RELEASE
+  - BUILD_TYPE=DEBUG
 
 before_install:
   - sudo apt-get -qq update
@@ -12,12 +17,13 @@ before_install:
 
 install:
   - wget https://github.com/openrisc/newlib/releases/download/v2.3.0-1/or1k-elf_gcc5.2.0_binutils2.26_newlib2.3.0-1_gdb7.11.tgz
-  - tar -xzvf or1k-elf_gcc5.2.0_binutils2.26_newlib2.3.0-1_gdb7.11.tgz
+  - tar -xzf or1k-elf_gcc5.2.0_binutils2.26_newlib2.3.0-1_gdb7.11.tgz
   - export PATH=$PATH:`pwd`/or1k-elf/bin
 
 before_script:
-  - mkdir BUILD
-  - cd BUILD
-  - cmake .. -DBUILD_SW=ON
+  - mkdir -p BUILD/$BUILD_TYPE/BUILD
+  - cd BUILD/$BUILD_TYPE/BUILD
+  - cmake ../../.. -DBUILD_SW=ON -DBUILD_SIM=ON -DCMAKE_INSTALL_PREFIX=BUILD/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-script: make
+script:
+  - make && make install
