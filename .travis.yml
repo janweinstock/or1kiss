@@ -1,11 +1,18 @@
 dist: trusty
-sudo: required
+sudo: false
 
 language: c++
 
 compiler:
   - gcc
   - clang
+
+addons:
+  apt:
+    packages:
+    - build-essential
+    - libelf-dev
+    - cmake3
 
 env:
   - BUILD_TYPE=RELEASE
@@ -21,8 +28,7 @@ install:
   - or1k-elf-gcc --version
 
 before_script:
-  - mkdir BUILD
-  - cd BUILD
+  - mkdir BUILD && cd BUILD
   - cmake .. -DBUILD_SW=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
 script:
