@@ -1,0 +1,18 @@
+dist: trusty
+sudo: required
+
+language: c++
+
+compiler:
+  - gcc
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libelf-dev cmake3
+
+before_script:
+  - mkdir BUILD
+  - cd BUILD
+  - cmake3 ..
+
+script: make
