@@ -26,14 +26,14 @@
 
 void usage(const char* name) {
     fprintf(stderr, "Usage: %s [-e file] [-b file] ", name);
-    fprintf(stderr, "[-t file] [-p port] [-m size] [-c cycles] [-w] [-x]\n");
+    fprintf(stderr, "[-t file] [-p port] [-m size] [-i num] [-w] [-x]\n");
     fprintf(stderr, "Arguments:\n");
     fprintf(stderr, "  -e <file>   elf binary to load into memory\n");
     fprintf(stderr, "  -b <file>   raw binary image to load into memory\n");
     fprintf(stderr, "  -t <file>   trace file to store trace information\n");
     fprintf(stderr, "  -p <port>   port number for debugger connection\n");
     fprintf(stderr, "  -m <size>   simulated memory size (in bytes)\n");
-    fprintf(stderr, "  -c <cycles> number of cycles to simulate\n");
+    fprintf(stderr, "  -i <n>      number of instructions to simulate\n");
     fprintf(stderr, "  -w          show warnings from debugger\n");
     fprintf(stderr, "  -x          do not use pointers for memory access\n");
     fprintf(stderr, "  -z          disable instruction decode caching\n");
@@ -45,20 +45,20 @@ int main(int argc, char** argv) {
     char* tracefile = NULL;
     unsigned short debugport = 0;
     unsigned int memsize = 0x08000000; // 128MB
-    unsigned int cycles = 0;
+    unsigned int ninsns = 0;
     bool show_warn = false;
     bool use_ptrs = true;
     or1kiss::decode_cache_size dcsz = or1kiss::DECODE_CACHE_SIZE_8M;
 
     int c; // parse command line
-    while ((c = getopt(argc, argv, "e:b:t:p:m:c:vwxz")) != -1) {
+    while ((c = getopt(argc, argv, "e:b:t:p:m:i:vwxz")) != -1) {
         switch(c) {
         case 'e': elffile   = optarg; break;
         case 'b': binary    = optarg; break;
         case 't': tracefile = optarg; break;
         case 'p': debugport = atoi(optarg); break;
         case 'm': memsize   = atoi(optarg); break;
-        case 'c': cycles    = atoi(optarg); break;
+        case 'i': ninsns    = atoi(optarg); break;
         case 'v': puts("CTEST_FULL_OUTPUT"); break;
         case 'w': show_warn = !show_warn; break;
         case 'x': use_ptrs  = !use_ptrs; break;
@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
         gettimeofday(&t1, NULL);
 
         if (debugport == 0) {
-            if (cycles > 0)
-                sim.step(cycles);
+            if (ninsns > 0)
+                sim.step(ninsns);
             else
                 sim.run();
         } else {
@@ -108,8 +108,8 @@ int main(int argc, char** argv) {
             if (elf)
                 debugger.set_elf(elf);
             debugger.show_warnings(show_warn);
-            if (cycles > 0)
-                debugger.step(cycles);
+            if (ninsns > 0)
+                debugger.step(ninsns);
             else
                 debugger.run();
         }
