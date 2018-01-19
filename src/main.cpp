@@ -46,7 +46,6 @@ int main(int argc, char** argv) {
     unsigned int memsize = 0x08000000; // 128MB
     unsigned int ninsns = 0;
     bool show_warn = false;
-    bool use_ptrs = true;
     or1kiss::decode_cache_size dcsz = or1kiss::DECODE_CACHE_SIZE_8M;
 
     int c; // parse command line
