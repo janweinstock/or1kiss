@@ -291,16 +291,6 @@ namespace or1kiss {
         request m_ireq;
         request m_dreq;
 
-        u8* m_imem_ptr;
-        u32 m_imem_start;
-        u32 m_imem_end;
-        u64 m_imem_cycles;
-
-        u8* m_dmem_ptr;
-        u32 m_dmem_start;
-        u32 m_dmem_end;
-        u64 m_dmem_cycles;
-
         vector<u32> m_breakpoints;
         vector<u32> m_watchpoints_r;
         vector<u32> m_watchpoints_w;
@@ -859,28 +849,6 @@ namespace or1kiss {
 
     inline void or1k::trigger_tlb_miss(u32 addr) {
         exception(EX_DATA_TLB_MISS, addr);
-    }
-
-    inline void or1k::set_insn_ptr(unsigned char* ptr, u32 start,
-                                   u32 end, u64 cycles) {
-        if (start > end)
-            OR1KISS_ERROR("invalid range specified %u..%u", start, end);
-
-        m_imem_ptr = ptr;
-        m_imem_start = start;
-        m_imem_end = end;
-        m_imem_cycles = cycles;
-    }
-
-    inline void or1k::set_data_ptr(unsigned char* ptr, u32 start,
-                                   u32 end, u64 cycles) {
-        if (start > end)
-            OR1KISS_ERROR("invalid range specified %u..%u", start, end);
-
-        m_dmem_ptr = ptr;
-        m_dmem_start = start;
-        m_dmem_end = end;
-        m_dmem_cycles = cycles;
     }
 
     inline const std::vector<u32>& or1k::get_breakpoints() const {

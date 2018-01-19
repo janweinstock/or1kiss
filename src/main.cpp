@@ -35,7 +35,6 @@ void usage(const char* name) {
     fprintf(stderr, "  -m <size>   simulated memory size (in bytes)\n");
     fprintf(stderr, "  -i <n>      number of instructions to simulate\n");
     fprintf(stderr, "  -w          show warnings from debugger\n");
-    fprintf(stderr, "  -x          do not use pointers for memory access\n");
     fprintf(stderr, "  -z          disable instruction decode caching\n");
 }
 
@@ -61,7 +60,6 @@ int main(int argc, char** argv) {
         case 'i': ninsns    = atoi(optarg); break;
         case 'v': puts("CTEST_FULL_OUTPUT"); break;
         case 'w': show_warn = !show_warn; break;
-        case 'x': use_ptrs  = !use_ptrs; break;
         case 'z': dcsz      = or1kiss::DECODE_CACHE_OFF; break;
         case 'h': usage(argv[0]); return EXIT_SUCCESS;
         default : usage(argv[0]); return EXIT_FAILURE;
@@ -77,11 +75,6 @@ int main(int argc, char** argv) {
     try {
         memory mem(memsize);
         or1kiss::or1k sim(&mem, dcsz);
-
-        if (use_ptrs) {
-            sim.set_insn_ptr(mem.get_ptr(), 0, mem.get_size() - 1, 0);
-            sim.set_data_ptr(mem.get_ptr(), 0, mem.get_size() - 1, 1);
-        }
 
         or1kiss::elf* elf = NULL;
         if (elffile) {
