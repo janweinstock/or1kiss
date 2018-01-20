@@ -52,19 +52,19 @@
 #define OR1KISS_CPU_VERSION  ((OR1KISS_CPU_ID  & 0xff) << 24 | \
                               (OR1KISS_CPU_VER & 0xffffff))
 
-#define OR1KISS_ARCH_MAJOR   (0x01) /* Major Architecture Version Number */
-#define OR1KISS_ARCH_MINOR   (0x01) /* Minor Architecture Version Number */
-#define OR1KISS_ARCH_REV     (0x01) /* Architecture Revision Number */
+#define OR1KISS_ARCH_MAJOR   (1) /* Major Architecture Version Number */
+#define OR1KISS_ARCH_MINOR   (0) /* Minor Architecture Version Number */
+#define OR1KISS_ARCH_REV     (0) /* Architecture Revision Number */
 
 /* ORKISS_ARCH_VERSION is used to initialize the AVR register */
 #define OR1KISS_ARCH_VERSION ((OR1KISS_ARCH_MAJOR & 0xff) << 24 | \
                               (OR1KISS_ARCH_MINOR & 0xff) << 16 | \
                               (OR1KISS_ARCH_REV   & 0xff) <<  8)
 
-/* 100MHz clock */
+/* 100MHz default clock */
 #define OR1KISS_CLOCK        (100000000)
 
-/* Support for non-maskable interrupts (needed for SMP linux) */
+/* Support for non-maskable interrupts (needed for SMP Linux) */
 #define OR1KISS_PIC_NMI      (0x3) /* IRQ0 and IRQ1 are non-maskable */
 
 namespace or1kiss {
@@ -273,9 +273,6 @@ namespace or1kiss {
 
         u32 m_core_id;
         u32 m_num_cores;
-
-        u32 m_excl_addr;
-        u32 m_excl_data;
 
         u64 m_num_excl_read;
         u64 m_num_excl_write;

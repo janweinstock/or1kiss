@@ -102,8 +102,7 @@ namespace or1kiss {
 
     // stl_make_str builds a std::string object from a printf like
     // variable length argument list.
-    inline std::string stl_make_str(const char* fmt, ...)
-    {
+    inline std::string stl_make_str(const char* fmt, ...) {
         va_list args;
         va_start(args, fmt);
         std::size_t sz = std::vsnprintf(NULL, 0, fmt, args) + 1;

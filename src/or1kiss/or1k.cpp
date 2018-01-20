@@ -483,8 +483,6 @@ namespace or1kiss {
         m_pic_sr(0),
         m_core_id(0),
         m_num_cores(1),
-        m_excl_addr((u32)-1),
-        m_excl_data(0),
         m_num_excl_read(0),
         m_num_excl_write(0),
         m_num_excl_failed(0),
