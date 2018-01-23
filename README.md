@@ -21,7 +21,7 @@ will require some manual work. Windows is currently not supported.
     sudo yum install cmake3 libelf-dev     # Centos
     ```
 
-2. Chose directories for building and deployment:
+2. Choose directories for building and deployment:
     ```
     <source-dir>  location of your repo copy,     e.g. /home/jan/or1kiss
     <build-dir>   location to store object files, e.g. /home/jan/or1kiss/BUILD
@@ -58,7 +58,7 @@ will require some manual work. Windows is currently not supported.
 
 ----
 ## Maintaining Multiple Builds
-Debug builds (i.e., `-DCMAKE_BUILD_TYPE=DEBUG`) are intended for developers
+Debug builds (i.e. `-DCMAKE_BUILD_TYPE=DEBUG`) are intended for developers
 that use `or1kiss` within their own simulator and want to track down bugs.
 However, these builds operate 4x slower than optimized release builds and
 should therefore not be used in "productive" environments. To maintain both
@@ -70,7 +70,7 @@ for type in "DEBUG" "RELEASE"; do
     install="$home/BUILD/$type"
     build="$home/BUILD/$type/BUILD"
     mkdir -p $build && cd $build
-    cmake3 -DCMAKE_BUILD_TYPE=$type -DCMAKE_INSTALL_PREFIX=$install $home
+    cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_INSTALL_PREFIX=$install $home
     make install
 done
 ```
