@@ -13,11 +13,7 @@ addons:
     - libelf-dev
 
 env:
-  - BUILD_TYPE=RELEASE
-
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libelf-dev cmake3
+  - BUILD=RELEASE
 
 install:
   - release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
@@ -28,7 +24,7 @@ install:
 
 before_script:
   - mkdir BUILD && cd BUILD
-  - cmake .. -DBUILD_SW=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake .. -DBUILD_SW=ON -DCMAKE_BUILD_TYPE=$BUILD
 
 script:
   - make && ctest --output-on-failure
