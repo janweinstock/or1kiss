@@ -19,7 +19,13 @@
 #ifndef OR1KISS_INCLUDES_H
 #define OR1KISS_INCLUDES_H
 
+#if __cplusplus < 201103L
+#error Please compile with c++11
+#endif
+
+#ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS
+#endif
 
 #include <string>
 #include <vector>
