@@ -102,6 +102,9 @@ namespace or1kiss {
         if (!m_flag_alloc)
             return;
 
+        if (m_size == 0)
+            return;
+
         if (verbose)
             fprintf(stderr, "loading section '%s'... ", m_name.c_str());
 
