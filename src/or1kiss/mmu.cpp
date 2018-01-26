@@ -51,7 +51,7 @@ namespace or1kiss {
         return select;
     }
 
-    mmu::mmu(u32 config, port* port):
+    mmu::mmu(u32 config, env* e):
         m_cfg(config),
         m_ctrl(0),
         m_prot(0),
@@ -59,10 +59,10 @@ namespace or1kiss {
         m_num_ways(1  + bits32(config, 1, 0)),
         m_set_mask(m_num_sets - 1),
         m_tlb(),
-        m_port(port) {
+        m_env(e) {
         // Check that we have a busport if user wants hardware
         // TLB refill enabled
-        if ((port == NULL) && (config & MMUCFG_HTR))
+        if ((e == NULL) && (config & MMUCFG_HTR))
             OR1KISS_ERROR("Hardware TLB refill impossible, no memory access");
     }
 
@@ -198,7 +198,7 @@ namespace or1kiss {
         // Get the first page table entry from the L1 page directory. Its
         // base address is stored in the control register.
         mmureq.set_addr_and_data(page_directory + (pl1idx << 2), pte1);
-        if (m_port->convert_and_transact(mmureq) != RESP_SUCCESS)
+        if (m_env->convert_and_transact(mmureq) != RESP_SUCCESS)
             return MMU_TLB_MISS;
 
         if (!pte1)
@@ -206,7 +206,7 @@ namespace or1kiss {
 
         u32 page_table = OR1KISS_PAGE_ALIGN(pte1);
         mmureq.set_addr_and_data(page_table + (pl2idx << 2), pte2);
-        if (m_port->convert_and_transact(mmureq) != RESP_SUCCESS)
+        if (m_env->convert_and_transact(mmureq) != RESP_SUCCESS)
             return MMU_TLB_MISS;
 
         if (!pte2)

@@ -22,7 +22,7 @@
 #include "or1kiss/includes.h"
 #include "or1kiss/types.h"
 #include "or1kiss/exception.h"
-#include "or1kiss/port.h"
+#include "or1kiss/env.h"
 
 namespace or1kiss {
 
@@ -108,7 +108,7 @@ namespace or1kiss {
         elf_section(Elf* elf, Elf_Scn* section);
         virtual ~elf_section();
 
-        void load(port* port, bool verbose = false);
+        void load(env* e, bool verbose = false);
     };
 
     class elf
@@ -139,7 +139,7 @@ namespace or1kiss {
 
         u64 to_phys(u64 virt_addr) const;
 
-        void load(port* p, bool verbose = false);
+        void load(env* e, bool verbose = false);
 
         void dump();
 

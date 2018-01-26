@@ -50,7 +50,7 @@ namespace or1kiss {
         req.data = ptr;
         req.size = size;
 
-        if (m_port->convert_and_transact(req) != RESP_SUCCESS)
+        if (m_env->convert_and_transact(req) != RESP_SUCCESS)
             OR1KISS_ERROR("cannot read memory at 0x%08" PRIx32 " (%d bytes)",
                           phys_addr, size);
     }
@@ -63,7 +63,7 @@ namespace or1kiss {
         req.set_big_endian();
         req.set_addr_and_data(phys_addr, ptr, size);
 
-        if (m_port->convert_and_transact(req) != RESP_SUCCESS)
+        if (m_env->convert_and_transact(req) != RESP_SUCCESS)
             OR1KISS_ERROR("cannot write memory at 0x%08" PRIx32 " (%d bytes)",
                           phys_addr, size);
     }
@@ -520,7 +520,7 @@ namespace or1kiss {
 
     gdb::gdb(or1k& iss, unsigned short port):
         m_iss(iss),
-        m_port(iss.get_port()),
+        m_env(iss.get_env()),
         m_elf(NULL),
         m_rsp(port),
         m_detached(false),
@@ -534,7 +534,7 @@ namespace or1kiss {
 
     gdb::gdb(or1k& iss, elf* e, unsigned short port):
         m_iss(iss),
-        m_port(iss.get_port()),
+        m_env(iss.get_env()),
         m_elf(e),
         m_rsp(port),
         m_detached(false),

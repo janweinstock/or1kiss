@@ -46,7 +46,7 @@ namespace or1kiss {
     {
     private:
         or1k&     m_iss;
-        port*     m_port;
+        env*      m_env;
         elf*      m_elf;
         rsp       m_rsp;
         bool      m_detached;

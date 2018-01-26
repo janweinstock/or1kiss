@@ -25,6 +25,9 @@
 #include "or1kiss/exception.h"
 #include "or1kiss/bitops.h"
 
+
+#include "or1kiss/endian.h"
+#include "or1kiss/env.h"
 #include "or1kiss/mmu.h"
 #include "or1kiss/spr.h"
 #include "or1kiss/tick.h"
@@ -36,8 +39,6 @@
 #include "or1kiss/rsp.h"
 #include "or1kiss/gdb.h"
 
-#include "or1kiss/endian.h"
-#include "or1kiss/port.h"
 #include "or1kiss/or1k.h"
 
 #endif

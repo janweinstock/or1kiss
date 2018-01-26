@@ -177,7 +177,7 @@ namespace or1kiss {
         /* Nothing to do */
     }
 
-    class port
+    class env
     {
     private:
         endian         m_endian;
@@ -198,7 +198,7 @@ namespace or1kiss {
         response exclusive_access(unsigned char* ptr, request& req);
 
         // Disabled
-        port(const port&);
+        env(const env&);
 
     public:
         inline endian get_system_endian() const {
@@ -226,8 +226,8 @@ namespace or1kiss {
          * binaries that you load. Since the ISS is working with host endian,
          * the port will handle all the necessary endianess conversion for you.
          */
-        port(endian e);
-        virtual ~port();
+        env(endian e);
+        virtual ~env();
 
         virtual u64 sleep(u64 cycles) {
             return 0;
@@ -257,7 +257,7 @@ namespace or1kiss {
         virtual response transact(const request& req) = 0;
     };
 
-    inline void port::set_data_ptr(unsigned char* ptr, u32 start,
+    inline void env::set_data_ptr(unsigned char* ptr, u32 start,
                                    u32 end, u64 cycles) {
         if (start > end)
             OR1KISS_ERROR("invalid range specified %u..%u", start, end);
@@ -267,7 +267,7 @@ namespace or1kiss {
         m_data_cycles = cycles;
     }
 
-    inline void port::set_insn_ptr(unsigned char* ptr, u32 start,
+    inline void env::set_insn_ptr(unsigned char* ptr, u32 start,
                                    u32 end, u64 cycles) {
         if (start > end)
             OR1KISS_ERROR("invalid range specified %u..%u", start, end);
@@ -277,19 +277,19 @@ namespace or1kiss {
         m_insn_cycles = cycles;
     }
 
-    inline unsigned char* port::get_data_ptr(u32 addr) const {
+    inline unsigned char* env::get_data_ptr(u32 addr) const {
         if ((m_data_ptr == NULL) || (addr < m_data_start) || (addr > m_data_end))
             return NULL; // address outside bounds
         return m_data_ptr + addr - m_data_start;
     }
 
-    inline unsigned char* port::get_insn_ptr(u32 addr) const {
+    inline unsigned char* env::get_insn_ptr(u32 addr) const {
         if ((m_insn_ptr == NULL) || (addr < m_insn_start) || (addr > m_insn_end))
             return NULL; // address outside bounds
         return m_insn_ptr + addr - m_insn_start;
     }
 
-    inline unsigned char* port::direct_memory_ptr(request& req) const {
+    inline unsigned char* env::direct_memory_ptr(request& req) const {
         if (req.is_dmem()) {
             req.cycles += m_data_cycles;
             return get_data_ptr(req.addr);
@@ -300,13 +300,13 @@ namespace or1kiss {
     }
 
     template <typename T>
-    inline bool port::read(u32 addr, T& val) {
+    inline bool env::read(u32 addr, T& val) {
         u64 cycles = 0;
         return read(addr, val, cycles);
     }
 
     template <typename T>
-    inline bool port::read(u32 addr, T& val, u64& cycles) {
+    inline bool env::read(u32 addr, T& val, u64& cycles) {
         request req;
         req.set_dmem();
         req.set_read();
@@ -320,13 +320,13 @@ namespace or1kiss {
     }
 
     template <typename T>
-    inline bool port::write(u32 addr, const T& val) {
+    inline bool env::write(u32 addr, const T& val) {
         u64 cycles = 0;
         return write(addr, val, cycles);
     }
 
     template <typename T>
-    inline bool port::read_dbg(u32 addr, T& val) {
+    inline bool env::read_dbg(u32 addr, T& val) {
         request req;
         req.set_dmem();
         req.set_read();
@@ -340,7 +340,7 @@ namespace or1kiss {
     }
 
     template <typename T>
-    inline bool port::write(u32 addr, const T& val, u64& cycles) {
+    inline bool env::write(u32 addr, const T& val, u64& cycles) {
         request req;
         req.set_dmem();
         req.set_write();
@@ -354,7 +354,7 @@ namespace or1kiss {
     }
 
     template <typename T>
-    inline bool port::write_dbg(u32 addr, const T& val) {
+    inline bool env::write_dbg(u32 addr, const T& val) {
         request req;
         req.set_dmem();
         req.set_write();

@@ -22,7 +22,7 @@
 #include "or1kiss/includes.h"
 #include "or1kiss/utils.h"
 #include "or1kiss/exception.h"
-#include "or1kiss/port.h"
+#include "or1kiss/env.h"
 
 #define OR1KISS_PAGE_BITS           (13)
 #define OR1KISS_PAGE_SIZE           (1 << OR1KISS_PAGE_BITS)
@@ -126,15 +126,14 @@ namespace or1kiss {
     class mmu
     {
     private:
-        u32 m_cfg;
-        u32 m_ctrl;
-        u32 m_prot;
-        u32 m_num_sets;
-        u32 m_num_ways;
-        u32 m_set_mask;
-        u32 m_tlb[OR1KISS_TLB_MAX_REGS];
-
-        port* m_port;
+        u32  m_cfg;
+        u32  m_ctrl;
+        u32  m_prot;
+        u32  m_num_sets;
+        u32  m_num_ways;
+        u32  m_set_mask;
+        u32  m_tlb[OR1KISS_TLB_MAX_REGS];
+        env* m_env;
 
         int find_empty_way(int set) const;
 
@@ -143,7 +142,7 @@ namespace or1kiss {
         mmu(const mmu&);
 
     public:
-        mmu(u32, port*);
+        mmu(u32, env*);
         virtual ~mmu();
 
         inline u32 get_num_ways() const { return m_num_ways; }

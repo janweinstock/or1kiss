@@ -28,7 +28,7 @@
 #include "or1kiss/decode.h"
 #include "or1kiss/disasm.h"
 #include "or1kiss/endian.h"
-#include "or1kiss/port.h"
+#include "or1kiss/env.h"
 #include "or1kiss/tick.h"
 #include "or1kiss/insn.h"
 #include "or1kiss/mmu.h"
@@ -280,10 +280,10 @@ namespace or1kiss {
 
         u64 m_tick_update;
 
-        tick  m_tick;
-        mmu   m_dmmu;
-        mmu   m_immu;
-        port* m_port;
+        tick m_tick;
+        mmu  m_dmmu;
+        mmu  m_immu;
+        env* m_env;
 
         request m_ireq;
         request m_dreq;
@@ -640,7 +640,7 @@ namespace or1kiss {
                           u32 addr_end   = 0xffffffff,
                           u64 cycles = 0);
 
-        port* get_port() { return m_port; }
+        env*  get_env()  { return m_env; }
         mmu*  get_dmmu() { return &m_dmmu; }
         mmu*  get_immu() { return &m_immu; }
 
@@ -649,7 +649,7 @@ namespace or1kiss {
         u32  get_spr(u32, bool = false) const;
         void set_spr(u32, u32, bool = false);
 
-        or1k(port*, decode_cache_size = DECODE_CACHE_SIZE_8M);
+        or1k(env*, decode_cache_size = DECODE_CACHE_SIZE_8M);
         virtual ~or1k();
 
         step_result step(unsigned int& cycles);

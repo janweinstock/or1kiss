@@ -19,7 +19,7 @@
 #include "memory.h"
 
 memory::memory(uint64_t size):
-    or1kiss::port(or1kiss::ENDIAN_BIG),
+    or1kiss::env(or1kiss::ENDIAN_BIG),
     m_size(size),
     m_memory(new unsigned char [size]()) {
     set_data_ptr(m_memory, 0, size - 1, 1);

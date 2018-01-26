@@ -16,11 +16,11 @@
  *                                                                            *
  ******************************************************************************/
 
-#include "or1kiss/port.h"
+#include "or1kiss/env.h"
 
 namespace or1kiss {
 
-    port::port(endian e):
+    env::env(endian e):
         m_endian(e),
         m_data_ptr(NULL),
         m_data_start(0),
@@ -35,11 +35,11 @@ namespace or1kiss {
         /* Nothing to do */
     }
 
-    port::~port() {
+    env::~env() {
         /* Nothing to do */
     }
 
-    response port::exclusive_access(unsigned char* ptr, request& req) {
+    response env::exclusive_access(unsigned char* ptr, request& req) {
         if (req.is_read()) {
             m_excl_addr = req.addr;
             memcpy(req.data, ptr, req.size);
@@ -55,7 +55,7 @@ namespace or1kiss {
         return RESP_SUCCESS;
     }
 
-    response port::convert_and_transact(request& req) {
+    response env::convert_and_transact(request& req) {
         u64 buf;
 
         void* tmp = NULL;

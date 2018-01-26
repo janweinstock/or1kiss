@@ -24,7 +24,7 @@
 
 #include "or1kiss.h"
 
-class memory: public or1kiss::port
+class memory: public or1kiss::env
 {
 private:
     uint64_t m_size;

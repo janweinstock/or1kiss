@@ -69,7 +69,7 @@ namespace or1kiss {
             reset_cycles();
             reset_instructions();
             reset_compiles();
-            
+
             // Recalculate limits
             m_break_requested = true;
             break;
@@ -123,7 +123,7 @@ namespace or1kiss {
             break;
 
         case NOP_PUTS:
-            std::cout << (char*)m_port->get_data_ptr(GPR[3]) << std::flush;
+            std::cout << (char*)m_env->get_data_ptr(GPR[3]) << std::flush;
             break;
 
         default:

@@ -37,16 +37,16 @@ set(sources
     "${src}/or1kiss/execute.cpp"
     "${src}/or1kiss/insn.cpp"
     "${src}/or1kiss/spr.cpp"
+    "${src}/or1kiss/env.cpp"
     "${src}/or1kiss/mmu.cpp"
     "${src}/or1kiss/tick.cpp"
-    "${src}/or1kiss/port.cpp"
     "${src}/or1kiss/or1k.cpp"
     "${src}/or1kiss/elf.cpp"
     "${src}/or1kiss/rsp.cpp"
     "${src}/or1kiss/gdb.cpp"
     "${src}/or1kiss/exception.cpp"
     "${src}/or1kiss/tracing.cpp")
-    
+
 include_directories(${inc} ${LIBELF_INCLUDE_DIRS})
 
 add_library(or1kiss ${sources})

@@ -98,7 +98,7 @@ namespace or1kiss {
         delete [] m_data;
     }
 
-    void elf_section::load(port* p, bool verbose) {
+    void elf_section::load(env* e, bool verbose) {
         if (!m_flag_alloc)
             return;
 
@@ -122,7 +122,7 @@ namespace or1kiss {
 
         req.set_big_endian();
 
-        if (p->convert_and_transact(req) != RESP_SUCCESS) {
+        if (e->convert_and_transact(req) != RESP_SUCCESS) {
             fprintf(stderr, "warning: cannot load section '%s' to memory [0x%08" PRIx64 " - 0x%08" PRIx64 "]",
                     m_name.c_str(), m_phys_addr, m_phys_addr + m_size);
         }
@@ -229,12 +229,12 @@ namespace or1kiss {
         return virt_addr;
     }
 
-    void elf::load(port* p, bool verbose) {
+    void elf::load(env* e, bool verbose) {
         if (verbose)
             fprintf(stderr, "loading elf from '%s'\n", m_filename.c_str());
 
         for (unsigned int i = 0; i < m_sections.size(); i++)
-            m_sections[i]->load(p, verbose);
+            m_sections[i]->load(e, verbose);
 
         if (m_entry != 0x100)
             fprintf(stderr, "invalid entry point 0x%08" PRIx64 " ignored\n",

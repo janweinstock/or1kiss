@@ -111,7 +111,7 @@ namespace or1kiss {
         if (m_tick.enabled() && m_tick.irq_enabled())
             skip = min(m_tick.next_tick(), (u64)m_tick.limit());
 
-        if ((cycles = m_port->sleep(skip))) { // try SystemC-sleep first
+        if ((cycles = m_env->sleep(skip))) { // try SystemC-sleep first
             m_cycles += cycles;
             m_sleep_cycles += cycles;
             m_limit += cycles;
@@ -167,7 +167,7 @@ namespace or1kiss {
         }
 
         // Let port convert endianess and send the request
-        switch (m_port->convert_and_transact(req)) {
+        switch (m_env->convert_and_transact(req)) {
         case RESP_ERROR:
             exception(EX_DATA_BUS_ERROR, req.addr);
             return false;
@@ -241,11 +241,11 @@ namespace or1kiss {
         }
 
         // Fetch instruction from memory
-        unsigned char* pmem = m_port->get_insn_ptr(m_ireq.addr);
+        unsigned char* pmem = m_env->get_insn_ptr(m_ireq.addr);
         if (pmem) {
             m_insn = byte_swap(*(u32*)(pmem));
         } else {
-            switch (m_port->convert_and_transact(m_ireq)) {
+            switch (m_env->convert_and_transact(m_ireq)) {
             case RESP_ERROR:
                 exception(EX_INSN_BUS_ERROR, m_ireq.addr);
                 return NULL;
@@ -440,7 +440,7 @@ namespace or1kiss {
         return false;
     }
 
-    or1k::or1k(port* port, decode_cache_size size):
+    or1k::or1k(env* e, decode_cache_size size):
         m_decode_cache(size),
         m_decode_table(),
         m_stop_requested(false),
@@ -489,10 +489,10 @@ namespace or1kiss {
         m_tick_update(0),
         m_tick(),
         m_dmmu(MMUCFG_NTS128 | MMUCFG_NTW4 | MMUCFG_CRI | MMUCFG_HTR |
-               MMUCFG_TEIRI, port),
+               MMUCFG_TEIRI, e),
         m_immu(MMUCFG_NTS128 | MMUCFG_NTW4 | MMUCFG_CRI | MMUCFG_HTR |
-               MMUCFG_TEIRI, port),
-        m_port(port),
+               MMUCFG_TEIRI, e),
+        m_env(e),
         m_ireq(),
         m_dreq(),
         m_breakpoints(),
