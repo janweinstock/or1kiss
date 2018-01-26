@@ -16,8 +16,8 @@
  *                                                                            *
  ******************************************************************************/
 
-#ifndef OR1KISS_PORT_H
-#define OR1KISS_PORT_H
+#ifndef OR1KISS_ENV_H
+#define OR1KISS_ENV_H
 
 #include "or1kiss/includes.h"
 #include "or1kiss/types.h"
@@ -59,10 +59,9 @@ namespace or1kiss {
         endian m_endian;
 
     public:
-        mutable u64 cycles;
-        u32 addr;
-
-        void* data;
+        mutable u64  cycles;
+        u32          addr;
+        void*        data;
         unsigned int size;
 
         inline bool is_read()  const { return m_read; }
@@ -155,7 +154,7 @@ namespace or1kiss {
         cycles(0),
         addr(0),
         data(NULL),
-        size(0){
+        size(0) {
         /* Nothing to do */
     }
 
@@ -183,17 +182,17 @@ namespace or1kiss {
         endian         m_endian;
 
         unsigned char* m_data_ptr;
-        u32       m_data_start;
-        u32       m_data_end;
-        u64       m_data_cycles;
+        u32            m_data_start;
+        u32            m_data_end;
+        u64            m_data_cycles;
 
         unsigned char* m_insn_ptr;
-        u32       m_insn_start;
-        u32       m_insn_end;
-        u64       m_insn_cycles;
+        u32            m_insn_start;
+        u32            m_insn_end;
+        u64            m_insn_cycles;
 
-        u32       m_excl_addr;
-        u32       m_excl_data;
+        u32            m_excl_addr;
+        u32            m_excl_data;
 
         response exclusive_access(unsigned char* ptr, request& req);
 
@@ -201,9 +200,7 @@ namespace or1kiss {
         env(const env&);
 
     public:
-        inline endian get_system_endian() const {
-            return m_endian;
-        }
+        endian get_system_endian() const { return m_endian; }
 
         inline void set_data_ptr(unsigned char* ptr,
                                  u32 addr_start = 0x00000000,
@@ -229,10 +226,8 @@ namespace or1kiss {
         env(endian e);
         virtual ~env();
 
-        virtual u64 sleep(u64 cycles) {
-            return 0;
-        }
-
+        virtual u64 sleep(u64 cycles) { return 0; }
+        virtual response transact(const request& req) = 0;
         response convert_and_transact(request& req);
 
         template <typename T>
@@ -252,9 +247,6 @@ namespace or1kiss {
 
         template <typename T>
         inline bool write_dbg(u32 addr, const T& val);
-
-    protected:
-        virtual response transact(const request& req) = 0;
     };
 
     inline void env::set_data_ptr(unsigned char* ptr, u32 start,
