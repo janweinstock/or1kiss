@@ -54,7 +54,7 @@ namespace or1kiss {
     }
 
     // copy memory and swap bytes
-    inline void* memcpyswp(void* to, void* from, unsigned int size) {
+    inline void* memcpyswp(void* to, const void* from, unsigned int size) {
         switch (size) {
         case 1: *(u8* )to = *(u8*)from; break;
         case 2: *(u16*)to = byte_swap(*(u16*)from); break;
