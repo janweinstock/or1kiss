@@ -212,11 +212,6 @@ namespace or1kiss {
         if (!pte2)
             return MMU_TLB_MISS; // MMU_PAGE_FAULT;
 
-        // No need to check translation and put it into the TLB if we are
-        // only doing a debug access.
-        if (req.is_debug())
-            return MMU_OKAY;
-
         // Need to put the entry also into TLB
         u32 match = vpg | MMUM_LRU0 | MMUM_V;
         u32 trans = pte2 | MMUPTE_CC;
@@ -227,7 +222,7 @@ namespace or1kiss {
             trans |= (MMU_SXE | MMU_UXE);
 
         // Check access rights
-        if (!(trans & access_mask(req)))
+        if (!(trans & access_mask(req)) && !req.is_debug())
             return MMU_PAGE_FAULT;
 
         // Update access_mask and dirty flags
@@ -240,13 +235,15 @@ namespace or1kiss {
         u32 off = OR1KISS_PAGE_OFFSET(req.addr);
         req.addr = ppg | off;
 
-        // Account for the extra lookup time
-        req.cycles += mmureq.cycles;
+        if (!req.is_debug()) {
+            // Account for the extra lookup time
+            req.cycles += mmureq.cycles;
 
-        // Find an empty location and store in TLB
-        int way = find_empty_way(set);
-        m_tlb[OR1KISS_TLB_MR(way, set)] = match;
-        m_tlb[OR1KISS_TLB_TR(way, set)] = trans;
+            // Find an empty location and store in TLB
+            int way = find_empty_way(set);
+            m_tlb[OR1KISS_TLB_MR(way, set)] = match;
+            m_tlb[OR1KISS_TLB_TR(way, set)] = trans;
+        }
 
         // Done!
         return MMU_OKAY;
