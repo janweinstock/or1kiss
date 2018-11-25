@@ -367,7 +367,7 @@ namespace or1kiss {
         m_pmr &= ~PMR_DME;   // Wake up from doze
 
         // Calculate address of exception vector
-        u32 target = g_exception_vector[type];
+        u32 target = g_exception_vector[type] + m_evba;
         if (m_status & SR_EPH)
             target |= 0xf0000000;
 
@@ -465,7 +465,7 @@ namespace or1kiss {
         m_unit(UPR_TTP | UPR_PICP | UPR_MP | UPR_UP |
                UPR_DMP | UPR_IMP  | UPR_PMP),
         m_cpucfg(CPUCFGR_OB32S  | CPUCFGR_OF32S |
-                 CPUCFGR_AECSRP | CPUCFGR_AVRP),
+                 CPUCFGR_AECSRP | CPUCFGR_AVRP | CPUCFGR_EVBARP),
         m_fpcfg(0),
         m_status(SR_FO | SR_SM),
         m_insn(0),
@@ -474,6 +474,7 @@ namespace or1kiss {
         m_exsr(0),
         m_expc(0),
         m_exea(0),
+        m_evba(0),
         m_shadow(),
         m_mac(),
         m_fmac(),

@@ -138,6 +138,7 @@ namespace or1kiss {
         case SPR_EPCR     : return m_expc;
         case SPR_EEAR     : return m_exea;
         case SPR_ESR      : return m_exsr;
+        case SPR_EVBAR    : return m_evba;
         case SPR_COREID   : return m_core_id;
         case SPR_NUMCORES : return m_num_cores;
 
@@ -226,10 +227,11 @@ namespace or1kiss {
         case SPR_EPCR     : m_expc = val; return;
         case SPR_EEAR     : m_exea = val; return;
         case SPR_ESR      : m_exsr = val; return;
+        case SPR_EVBAR    : m_evba = val; return;
         case SPR_AECR     : m_aecr = val; return;
         case SPR_AESR     : m_aesr = val; return;
-        case SPR_COREID   : warn("attempt to write to COREID");
-        case SPR_NUMCORES : warn("attempt to write to NUMCORES");
+        case SPR_COREID   : warn("attempt to write to COREID"); return;
+        case SPR_NUMCORES : warn("attempt to write to NUMCORES"); return;
         case SPR_SR       : m_status = val; return;
 
         /* DMMU group */
@@ -253,13 +255,7 @@ namespace or1kiss {
         case SPR_MACLO    : m_mac.lo = val; return;
 
         /* Power Management group */
-        case SPR_PMR      : m_pmr = val;
-        //printf("%10llu: enter sleep\n", m_cycles);
-        //printf("%10llu: next tick in %llu\n", m_cycles, m_tick.next_tick());
-        //if (m_trace_enabled && m_user_trace_stream)
-        //    *m_user_trace_stream << "   SLEEP\n";
-        doze();
-        return;
+        case SPR_PMR      : m_pmr = val; doze(); return;
 
         /* PIC group */
         case SPR_PICMR    : m_pic_mr = val | OR1KISS_PIC_NMI; return;
@@ -292,8 +288,8 @@ namespace or1kiss {
             return m_immu.set_tlb(reg - SPR_ITLBW0MR, val);
 
         /* Show warning that we ignored the command */
-        warn("(or1k %d) ignoring SPR write (g%d:r%d) @ 0x%08x\n",
-             m_core_id, spr_group(reg), spr_regno(reg), m_next_pc);
+        warn("(or1k %d) ignoring SPR write g%d:r%d = 0x%08x @ 0x%08x\n",
+             m_core_id, spr_group(reg), spr_regno(reg), val, m_next_pc);
     }
 
 }

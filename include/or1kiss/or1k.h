@@ -259,6 +259,7 @@ namespace or1kiss {
         u32 m_exsr;
         u32 m_expc;
         u32 m_exea;
+        u32 m_evba;
 
         u32 m_shadow[OR1KISS_SHADOW_REGS];
 
