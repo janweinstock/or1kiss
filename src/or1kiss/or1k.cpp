@@ -380,7 +380,7 @@ namespace or1kiss {
             m_next_pc = target;
     }
 
-    void or1k::interrupt(int id, bool set) {
+    void or1k::interrupt_level(int id, bool set) {
         const u32 irq_mask = 1 << id;
 
         // Update status register
@@ -388,6 +388,19 @@ namespace or1kiss {
             m_pic_sr |=  irq_mask;
         else
             m_pic_sr &= ~irq_mask;
+    }
+
+    void or1k::interrupt_edge(int id, bool set) {
+        const u32 irq_mask = 1 << id;
+        if (set)
+            m_pic_sr |= irq_mask;
+    }
+
+    void or1k::interrupt(int id, bool set) {
+        if (m_pic_level)
+            interrupt_level(id, set);
+        else
+            interrupt_edge(id, set);
     }
 
     void or1k::update_timer() {
@@ -480,6 +493,7 @@ namespace or1kiss {
         m_fmac(),
         m_pmr(),
         m_allow_sleep(true),
+        m_pic_level(true),
         m_pic_mr(OR1KISS_PIC_NMI),
         m_pic_sr(0),
         m_core_id(0),

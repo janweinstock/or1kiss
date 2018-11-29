@@ -269,8 +269,9 @@ namespace or1kiss {
         u32  m_pmr;
         bool m_allow_sleep;
 
-        u32 m_pic_mr;
-        u32 m_pic_sr;
+        bool m_pic_level;
+        u32  m_pic_mr;
+        u32  m_pic_sr;
 
         u32 m_core_id;
         u32 m_num_cores;
@@ -318,6 +319,9 @@ namespace or1kiss {
         bool transact(request& req);
         void exception(unsigned int type, u32 addr = 0);
         void do_trace(const instruction*);
+
+        void interrupt_level(int id, bool set);
+        void interrupt_edge(int id, bool set);
 
         void update_timer();
 
@@ -644,6 +648,12 @@ namespace or1kiss {
         env*  get_env()  { return m_env; }
         mmu*  get_dmmu() { return &m_dmmu; }
         mmu*  get_immu() { return &m_immu; }
+
+        bool is_pic_level() const { return m_pic_level; }
+        bool is_pic_edge()  const { return !m_pic_level; }
+
+        void set_pic_level(bool set = true) { m_pic_level = set; }
+        void set_pic_edge(bool set = true) { m_pic_level = !set; }
 
         void interrupt(int, bool);
 
