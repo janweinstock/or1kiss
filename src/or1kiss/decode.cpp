@@ -194,7 +194,7 @@ namespace or1kiss {
 
         // Load & Store
         case 0x1b: return ORBIS32_LWA;
-        case 0x20: return ORBIS32_LD;
+        case 0x20: return INVALID_OPCODE;
         case 0x21: return ORBIS32_LWZ;
         case 0x22: return ORBIS32_LWS;
         case 0x23: return ORBIS32_LBZ;
@@ -202,7 +202,7 @@ namespace or1kiss {
         case 0x25: return ORBIS32_LHZ;
         case 0x26: return ORBIS32_LHS;
         case 0x33: return ORBIS32_SWA;
-        case 0x34: return ORBIS32_SD;
+        case 0x34: return INVALID_OPCODE;
         case 0x35: return ORBIS32_SW;
         case 0x36: return ORBIS32_SB;
         case 0x37: return ORBIS32_SH;

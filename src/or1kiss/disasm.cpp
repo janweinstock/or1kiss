@@ -35,7 +35,6 @@ namespace or1kiss {
             "l.bnf",
 
             "l.lwa",
-            "l.ld",
             "l.lwz",
             "l.lws",
             "l.lhz",
@@ -43,7 +42,6 @@ namespace or1kiss {
             "l.lbz",
             "l.lbs",
             "l.swa",
-            "l.sd",
             "l.sw",
             "l.sh",
             "l.sb",
@@ -300,7 +298,6 @@ namespace or1kiss {
                << reg_b(insn);
             break;
 
-        case ORBIS32_LD:
         case ORBIS32_LWZ:
         case ORBIS32_LWS:
         case ORBIS32_LHZ:
@@ -316,7 +313,6 @@ namespace or1kiss {
                << ")";
             break;
 
-        case ORBIS32_SD:
         case ORBIS32_SW:
         case ORBIS32_SH:
         case ORBIS32_SB:
@@ -471,6 +467,7 @@ namespace or1kiss {
                << reg_a(insn)
                << ","
                << reg_b(insn);
+            break;
 
         case ORFPX64_ADD:
         case ORFPX64_SUB:
@@ -504,6 +501,7 @@ namespace or1kiss {
                << reg_a(insn)
                << ","
                << reg_b(insn);
+            break;
 
         default:
             break;

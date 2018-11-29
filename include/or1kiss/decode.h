@@ -44,7 +44,6 @@ namespace or1kiss {
 
         /* Load & Store */
         ORBIS32_LWA,    /* l.lwa    (load word atomic) */
-        ORBIS32_LD,     /* l.ld     (load double word) */
         ORBIS32_LWZ,    /* l.lwz    (load single word and extend with zero) */
         ORBIS32_LWS,    /* l.lws    (load single word and extend with sign) */
         ORBIS32_LHZ,    /* l.lhz    (load half word and extend with zero) */
@@ -52,7 +51,6 @@ namespace or1kiss {
         ORBIS32_LBZ,    /* l.lbz    (load byte and extend with zero) */
         ORBIS32_LBS,    /* l.lbs    (load byte and extend with sign) */
         ORBIS32_SWA,    /* l.swa    (store word atomic) */
-        ORBIS32_SD,     /* l.sd     (store double word) */
         ORBIS32_SW,     /* l.sw     (store single word) */
         ORBIS32_SH,     /* l.sh     (store half word) */
         ORBIS32_SB,     /* l.sb     (store byte) */

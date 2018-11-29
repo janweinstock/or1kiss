@@ -526,7 +526,6 @@ namespace or1kiss {
         m_decode_table[ORBIS32_JALR  ] = &or1k::decode_orbis32_jalr;
 
         m_decode_table[ORBIS32_LWA   ] = &or1k::decode_orbis32_lwa;
-        m_decode_table[ORBIS32_LD    ] = &or1k::decode_na;
         m_decode_table[ORBIS32_LWZ   ] = &or1k::decode_orbis32_lwz;
         m_decode_table[ORBIS32_LWS   ] = &or1k::decode_orbis32_lws;
         m_decode_table[ORBIS32_LHZ   ] = &or1k::decode_orbis32_lhz;
@@ -534,7 +533,6 @@ namespace or1kiss {
         m_decode_table[ORBIS32_LBZ   ] = &or1k::decode_orbis32_lbz;
         m_decode_table[ORBIS32_LBS   ] = &or1k::decode_orbis32_lbs;
         m_decode_table[ORBIS32_SWA   ] = &or1k::decode_orbis32_swa;
-        m_decode_table[ORBIS32_SD    ] = &or1k::decode_na;
         m_decode_table[ORBIS32_SW    ] = &or1k::decode_orbis32_sw;
         m_decode_table[ORBIS32_SH    ] = &or1k::decode_orbis32_sh;
         m_decode_table[ORBIS32_SB    ] = &or1k::decode_orbis32_sb;
