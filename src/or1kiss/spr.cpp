@@ -259,7 +259,8 @@ namespace or1kiss {
 
         /* PIC group */
         case SPR_PICMR    : m_pic_mr = val | OR1KISS_PIC_NMI; return;
-        case SPR_PICSR    : m_pic_sr = m_pic_level ? val : m_pic_sr & ~val;
+        case SPR_PICSR    : if (!m_pic_level)
+                                m_pic_sr &= ~val;
                             return;
 
         /* Tick Timer group */
