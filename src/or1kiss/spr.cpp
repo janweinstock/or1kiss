@@ -62,7 +62,7 @@ namespace or1kiss {
         case SPR_DCCR     : return SPR_SRE | SPR_SWE;
         case SPR_DCBPR    : return SPR_SWE | SPR_UWE;
         case SPR_DCBFR    : return SPR_SWE | SPR_UWE;
-        case SPR_DCIR     : return SPR_SWE;
+        case SPR_DCBIR    : return SPR_SWE;
         case SPR_DCBWR    : return SPR_SWE | SPR_UWE;
         case SPR_DCBLR    : return SPR_SWE | SPR_UWE;
 
@@ -243,12 +243,16 @@ namespace or1kiss {
         case SPR_ITLBEIR  : m_immu.flush_tlb_entry(val); return;
 
         /* Data Cache group */
-        case SPR_DCBPR    : return;
-        case SPR_DCBFR    : return;
+        case SPR_DCBPR    : return; /* prefetch */
+        case SPR_DCBFR    : return; /* flush */
+        case SPR_DCBIR    : return; /* invalidate */
+        case SPR_DCBWR    : return; /* write back */
+        case SPR_DCBLR    : return; /* lock */
 
         /* Instruction Cache group */
-        case SPR_ICBPR    : return;
+        case SPR_ICBPR    : return; /* prefetch */
         case SPR_ICBIR    : m_decode_cache.invalidate_block(val, 32); return;
+        case SPR_ICBLR    : return; /* lock */
 
         /* MAC group */
         case SPR_MACHI    : m_mac.hi = val; return;

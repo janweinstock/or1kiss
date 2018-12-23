@@ -100,7 +100,7 @@ namespace or1kiss {
         SPR_DCCR     = SPG_DC + 0,      /* DC Control register */
         SPR_DCBPR    = SPG_DC + 1,      /* DC Block Prefetch register */
         SPR_DCBFR    = SPG_DC + 2,      /* DC Block Flush register */
-        SPR_DCIR     = SPG_DC + 3,      /* DC Block Invalidate register */
+        SPR_DCBIR    = SPG_DC + 3,      /* DC Block Invalidate register */
         SPR_DCBWR    = SPG_DC + 4,      /* DC Block Write-back register */
         SPR_DCBLR    = SPG_DC + 5,      /* DC Block Lock register */
 
