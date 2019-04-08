@@ -37,6 +37,7 @@ namespace or1kiss {
         doze();
 
         while (m_cycles < m_limit) {
+            m_watchpoint_hit = false;
             m_stop_requested = false;
             m_break_requested = false;
 
@@ -83,6 +84,9 @@ namespace or1kiss {
                 // Break quantum (usually on SPR write)
                 if (unlikely(m_break_requested))
                     break;
+
+                if (unlikely(m_watchpoint_hit))
+                    break;
             }
 
             // At this point the current mini-quantum has been completed. Since
@@ -94,9 +98,11 @@ namespace or1kiss {
             if (unlikely(m_pic_sr & m_pic_mr))
                 exception(EX_EXTERNAL);
 
-            // Check if we dropped out due to a breakpoint.
+            // Check if we dropped out due to a breakpoint or watchpoint
             if (unlikely(breakpoint_hit()))
                 return STEP_BREAKPOINT;
+            if (unlikely(watchpoint_hit()))
+                return STEP_WATCHPOINT;
         }
 
         return STEP_OK;
@@ -133,6 +139,19 @@ namespace or1kiss {
 
         // Remember address for tracing
         m_trace_addr = req.addr;
+
+        // Check if we hit a watchpoint
+        if (!req.is_debug() && req.is_dmem()) {
+            if (unlikely(!m_watchpoints_r.empty() && req.is_read())) {
+                for (auto wp : m_watchpoints_r)
+                    m_watchpoint_hit |= wp.overlaps(req.addr, req.size);
+            }
+
+            if (unlikely(!m_watchpoints_w.empty() && req.is_write())) {
+                for (auto wp : m_watchpoints_w)
+                    m_watchpoint_hit |= wp.overlaps(req.addr, req.size);
+            }
+        }
 
         // Check if address is properly aligned
         if (!req.is_aligned() && !req.is_debug()) {
@@ -513,6 +532,7 @@ namespace or1kiss {
         m_breakpoints(),
         m_watchpoints_r(),
         m_watchpoints_w(),
+        m_watchpoint_hit(false),
         m_trace_enabled(false),
         m_trace_addr(0),
         m_user_trace_stream(NULL),
@@ -699,24 +719,28 @@ namespace or1kiss {
             stl_remove_erase(m_breakpoints, addr);
     }
 
-    void or1k::insert_watchpoint_r(u32 addr) {
-        if (!stl_contains(m_watchpoints_r, addr))
-            m_watchpoints_r.push_back(addr);
+    void or1k::insert_watchpoint_r(u32 addr, u32 size) {
+        watchpoint wp = { addr, size };
+        m_watchpoints_r.push_back(wp);
     }
 
-    void or1k::remove_watchpoint_r(u32 addr) {
-        if (stl_contains(m_watchpoints_r, addr))
-            stl_remove_erase(m_watchpoints_r, addr);
+    void or1k::remove_watchpoint_r(u32 addr, u32 size) {
+        stl_remove_erase_if(m_watchpoints_r,
+            [=] (const watchpoint& wp) -> bool {
+                return wp.overlaps(addr, size);
+        });
     }
 
-    void or1k::insert_watchpoint_w(u32 addr) {
-        if (!stl_contains(m_watchpoints_w, addr))
-            m_watchpoints_w.push_back(addr);
+    void or1k::insert_watchpoint_w(u32 addr, u32 size) {
+        watchpoint wp = { addr, size };
+        m_watchpoints_w.push_back(wp);
     }
 
-    void or1k::remove_watchpoint_w(u32 addr) {
-        if (stl_contains(m_watchpoints_w, addr))
-            stl_remove_erase(m_watchpoints_w, addr);
+    void or1k::remove_watchpoint_w(u32 addr, u32 size) {
+        stl_remove_erase_if(m_watchpoints_w,
+            [=] (const watchpoint& wp) -> bool {
+                return wp.overlaps(addr, size);
+        });
     }
 
     void or1k::trace(std::ostream& os) {

@@ -100,6 +100,11 @@ namespace or1kiss {
         v.erase(std::remove(v.begin(), v.end(), e), v.end());
     }
 
+    template <class V, class PRED>
+    inline void stl_remove_erase_if(V& v, PRED p) {
+        v.erase(std::remove_if(v.begin(), v.end(), p), v.end());
+    }
+
     // stl_make_str builds a std::string object from a printf like
     // variable length argument list.
     inline std::string stl_make_str(const char* fmt, ...) {

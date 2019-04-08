@@ -113,32 +113,11 @@ namespace or1kiss {
 
         gdb_mode get_mode() const { return m_mode; }
 
-        vector<u32> get_breakpoints();
-        vector<u32> get_watchpoints_r();
-        vector<u32> get_watchpoints_w();
-
-        void insert_breakpoint(u32);
-        void remove_breakpoint(u32);
-        void insert_watchpoint(u32);
-        void remove_watchpoint(u32);
-
         step_result step(unsigned int& n);
         step_result run(unsigned int quantum = 100u);
 
         void listen();
     };
-
-    inline std::vector<u32> gdb::get_breakpoints() {
-        return m_iss.get_breakpoints();
-    }
-
-    inline std::vector<u32> gdb::get_watchpoints_r() {
-        return m_iss.get_watchpoints_r();
-    }
-
-    inline std::vector<u32> gdb::get_watchpoints_w() {
-        return m_iss.get_watchpoints_w();
-    }
 
 }
 

@@ -214,6 +214,22 @@ namespace or1kiss {
         };
     } double_register; // size must be 8 bytes!
 
+    typedef struct _watchpoint {
+        u32 addr;
+        u32 size;
+
+        bool overlaps(u32 addr, u32 size) const;
+        bool overlaps(const struct _watchpoint& wp) const;
+    } watchpoint;
+
+    inline bool watchpoint::overlaps(u32 addr, u32 size) const {
+        return addr < (this->addr + this->size) && this->addr < (addr + size);
+    }
+
+    inline bool watchpoint::overlaps(const watchpoint& wp) const {
+        return overlaps(wp.addr, wp.size);
+    }
+
     class or1k
     {
     private:
@@ -291,8 +307,11 @@ namespace or1kiss {
         request m_dreq;
 
         vector<u32> m_breakpoints;
-        vector<u32> m_watchpoints_r;
-        vector<u32> m_watchpoints_w;
+
+        vector<watchpoint> m_watchpoints_r;
+        vector<watchpoint> m_watchpoints_w;
+
+        bool m_watchpoint_hit;
 
         bool m_trace_enabled;
         u32  m_trace_addr;
@@ -332,6 +351,7 @@ namespace or1kiss {
 
         u64 next_breakpoint() const;
         bool breakpoint_hit() const;
+        bool watchpoint_hit() const;
 
         /* ORBIS32 */
         void decode_orbis32_mfspr(instruction*);
@@ -669,23 +689,29 @@ namespace or1kiss {
         void insert_breakpoint(u32 addr);
         void remove_breakpoint(u32 addr);
 
-        void insert_watchpoint_r(u32 addr);
-        void remove_watchpoint_r(u32 addr);
+        void insert_watchpoint_r(u32 addr, u32 size);
+        void remove_watchpoint_r(u32 addr, u32 size);
 
-        void insert_watchpoint_w(u32 addr);
-        void remove_watchpoint_w(u32 addr);
+        void insert_watchpoint_w(u32 addr, u32 size);
+        void remove_watchpoint_w(u32 addr, u32 size);
 
         const vector<u32>& get_breakpoints() const;
-        const vector<u32>& get_watchpoints_r() const;
-        const vector<u32>& get_watchpoints_w() const;
+
+        const vector<watchpoint>& get_watchpoints_r() const;
+        const vector<watchpoint>& get_watchpoints_w() const;
 
         vector<u32>  get_breakpoints();
-        vector<u32>  get_watchpoints_r();
-        vector<u32>  get_watchpoints_w();
+
+        vector<watchpoint>  get_watchpoints_r();
+        vector<watchpoint>  get_watchpoints_w();
 
         void trace(ostream& = std::cout);
         void trace(const string&);
     };
+
+    inline bool or1k::watchpoint_hit() const {
+        return m_watchpoint_hit;
+    }
 
     inline bool or1k::is_interrupt_pending() const {
         return m_pic_sr & m_pic_mr;
@@ -867,19 +893,19 @@ namespace or1kiss {
         return m_breakpoints;
     }
 
-    inline const std::vector<u32>& or1k::get_watchpoints_r() const {
+    inline const std::vector<watchpoint>& or1k::get_watchpoints_r() const {
         return m_watchpoints_r;
     }
 
-    inline std::vector<u32> or1k::get_watchpoints_r() {
-        return m_watchpoints_r;
-    }
-
-    inline const std::vector<u32>& or1k::get_watchpoints_w() const {
+    inline const std::vector<watchpoint>& or1k::get_watchpoints_w() const {
         return m_watchpoints_w;
     }
 
-    inline std::vector<u32> or1k::get_watchpoints_w() {
+    inline std::vector<watchpoint> or1k::get_watchpoints_r() {
+        return m_watchpoints_r;
+    }
+
+    inline std::vector<watchpoint> or1k::get_watchpoints_w() {
         return m_watchpoints_w;
     }
 

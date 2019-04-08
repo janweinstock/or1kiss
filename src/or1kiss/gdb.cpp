@@ -453,11 +453,12 @@ namespace or1kiss {
             OR1KISS_ERROR("error parsing command '%s'\n", command);
 
         switch (type) {
-        case 0: insert_breakpoint(addr); break; // software breakpoint
-        case 1: insert_breakpoint(addr); break; // hardware breakpoint
-        case 2: insert_watchpoint(addr); break; // write watchpoint
-        case 3: insert_watchpoint(addr); break; // read watchpoint
-        case 4: insert_watchpoint(addr); break; // access watchpoint
+        case 0: m_iss.insert_breakpoint(addr); break; // software breakpoint
+        case 1: m_iss.insert_breakpoint(addr); break; // hardware breakpoint
+        case 2: m_iss.insert_watchpoint_w(addr, length); break; // write wp
+        case 3: m_iss.insert_watchpoint_r(addr, length); break; // read wp
+        case 4: m_iss.insert_watchpoint_w(addr, length); // access watchpoint
+                m_iss.insert_watchpoint_r(addr, length); break;
         default:
             OR1KISS_ERROR("invalid breakpoint type %d\n", type);
             return;
@@ -472,11 +473,12 @@ namespace or1kiss {
             OR1KISS_ERROR("error parsing command '%s'\n", command);
 
         switch (type) {
-        case 0: remove_breakpoint(addr); break; // software breakpoint
-        case 1: remove_breakpoint(addr); break; // hardware breakpoint
-        case 2: remove_watchpoint(addr); break; // write watchpoint
-        case 3: remove_watchpoint(addr); break; // read watchpoint
-        case 4: remove_watchpoint(addr); break; // access watchpoint
+        case 0: m_iss.remove_breakpoint(addr); break; // software breakpoint
+        case 1: m_iss.remove_breakpoint(addr); break; // hardware breakpoint
+        case 2: m_iss.remove_watchpoint_w(addr, length); break; // write wp
+        case 3: m_iss.remove_watchpoint_r(addr, length); break; // read wp
+        case 4: m_iss.remove_watchpoint_w(addr, length); // access watchpoint
+                m_iss.remove_watchpoint_r(addr, length); break;
         default:
             OR1KISS_ERROR("invalid breakpoint type %d\n", type);
             return;
@@ -548,24 +550,6 @@ namespace or1kiss {
 
     gdb::~gdb() {
         /* Nothing to do */
-    }
-
-    void gdb::insert_breakpoint(u32 addr) {
-        m_iss.insert_breakpoint(addr);
-    }
-
-    void gdb::remove_breakpoint(u32 addr) {
-        m_iss.remove_breakpoint(addr);
-    }
-
-    void gdb::insert_watchpoint(u32 addr) {
-        m_iss.insert_watchpoint_r(addr);
-        m_iss.insert_watchpoint_w(addr);
-    }
-
-    void gdb::remove_watchpoint(u32 addr) {
-        m_iss.remove_watchpoint_r(addr);
-        m_iss.remove_watchpoint_w(addr);
     }
 
     step_result gdb::step(unsigned int& cycles) {
