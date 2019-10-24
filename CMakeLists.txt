@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 3.5)
 option(BUILD_SIM "Build the standalone simulator" ON)
 option(BUILD_SW "Build sample software, requires or1k-elf-gcc" OFF)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(LibElf REQUIRED)
 
 set(CMAKE_CXX_STANDARD 11)
