@@ -66,7 +66,6 @@ namespace or1kiss {
 
         case NOP_CNT_RESET:
             std::cout << "(or1kiss) info: statistics reset" << std::endl;
-            reset_cycles();
             reset_instructions();
             reset_compiles();
 
