@@ -22,7 +22,7 @@ cache:
     - DEPENDS
 
 install:
-  - mkdir DEPENDS && cd DEPENDS
+  - mkdir -p DEPENDS && cd DEPENDS
   - release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
   - wget https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
   - tar -xzf $release
@@ -31,7 +31,7 @@ install:
   - or1k-elf-gcc --version
 
 before_script:
-  - mkdir BUILD && cd BUILD
+  - mkdir -p BUILD && cd BUILD
   - cmake .. -DCMAKE_BUILD_TYPE=$BUILD -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
 
 script:
