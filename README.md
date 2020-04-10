@@ -4,7 +4,7 @@ This repository contains the source code of `or1kiss`. It is an instruction
 set simulator (ISS) for the OpenRISC 1000 architecture that supports the
 `ORBIS32`, `ORFPX32` and `ORFPX64` instruction sets. The ISS employs a
 decode cache to accelerate its regular interpretative execution and usually
-achieves around 10-50 MIPS. While the repository also privides a standalone
+achieves around 10-50 MIPS. While the repository also provides a standalone
 simulator, `or1kiss` has been primarily designed to be embedded into system
 level simulators, e.g. SystemC and TLM based virtual platforms.
 
@@ -29,16 +29,16 @@ will require some manual work. Windows is currently not supported.
     ```
 
 3. Configure and build the project using `cmake`. Two config options exist:
-    * `-DBUILD_SIM=[ON|OFF]`: build the standalone simulator (default: `ON`)
-    * `-DBUILD_SW=[ON|OFF]` : build sample software (default: `OFF`,
-                              requires `or1k-elf-gcc`)
+    * `-DOR1KISS_BUILD_SIM=[ON|OFF]`: build the standalone simulator (default: `ON`)
+    * `-DOR1KISS_BUILD_SW=[ON|OFF]` : build sample software (default: `OFF`,
+                                      requires `or1k-elf-gcc`)
 
    Release and debug build configurations are controlled via the regular
    parameters:
     ```
     mkdir -p <build-dir>
     cd <build-dir>
-    cmake -DCMAKE_INSTALL_PREFIX=<install-dir> -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SIM=ON <source-dir>
+    cmake -DCMAKE_INSTALL_PREFIX=<install-dir> -DCMAKE_BUILD_TYPE=RELEASE -DOR1KISS_BUILD_SIM=ON <source-dir>
     make
     sudo make install
     ```
@@ -81,7 +81,7 @@ to the build you want to use:
 
 ----
 ## Testing the Standalone Simulator
-If you have built the sample software (`-DBUILD_SW=ON`), you use it to test the
+If you have built the sample software (`-DOR1KISS_BUILD_SW=ON`), you use it to test the
 standalone simulator, e.g.:
 ```
 $OR1KISS_HOME/bin/or1kiss -e $OR1KISS_HOME/sw/dhrystone.elf

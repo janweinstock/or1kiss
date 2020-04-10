@@ -1,30 +1,39 @@
-dist: trusty
+dist: bionic
 sudo: false
 
 language: c++
-
-compiler:
-  - gcc
-  - clang
+compiler: gcc
 
 addons:
   apt:
     packages:
     - libelf-dev
 
-env:
-  - BUILD=RELEASE
+jobs:
+  include:
+    - name: "release"
+      env:  BUILD=RELEASE
+
+    - name: "debug"
+      env:  BUILD=DEBUG
+
+cache:
+  directories:
+    - DEPENDS
 
 install:
+  - mkdir DEPENDS && cd DEPENDS
   - release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
   - wget https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
   - tar -xzf $release
   - export PATH=$PATH:`pwd`/or1k-elf/bin
+  - cd ..
   - or1k-elf-gcc --version
 
 before_script:
   - mkdir BUILD && cd BUILD
-  - cmake .. -DBUILD_SW=ON -DCMAKE_BUILD_TYPE=$BUILD
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
 
 script:
   - make && ctest --output-on-failure
+
