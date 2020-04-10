@@ -18,13 +18,13 @@
 
 add_definitions(-DSEED_METHOD=SEED_VOLATILE
                 -DPERFORMANCE_RUN=1
-                -DITERATIONS=3333
+                -DITERATIONS=100
                 -DFLAGS_STR=\"${CMAKE_C_FLAGS}\"
                 -Wno-implicit-function-declaration)
 add_executable(coremark core_list_join.c core_main.c core_matrix.c
                         core_portme.c core_state.c core_util.c clock.c)
 
 add_test(NAME coremark COMMAND ../../or1kiss -e coremark.elf)
-set_tests_properties(coremark PROPERTIES TIMEOUT 300)
+set_tests_properties(coremark PROPERTIES TIMEOUT 30)
 
 install(TARGETS coremark DESTINATION sw)

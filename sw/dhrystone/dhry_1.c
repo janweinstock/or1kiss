@@ -84,7 +84,7 @@ main ()
         Str_30          Str_1_Loc;
         Str_30          Str_2_Loc;
   REG   int             Run_Index;
-  REG   int             Number_Of_Runs = 1000000; /* JW */
+  REG   int             Number_Of_Runs = 100000; /* JW */
 
   /* Initializations */
 

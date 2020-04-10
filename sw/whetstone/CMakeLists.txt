@@ -21,6 +21,6 @@ add_executable(whetstone whetstone.c gettimeofday.c)
 target_link_libraries(whetstone m)
 
 add_test(NAME whetstone COMMAND ../../or1kiss -e whetstone.elf)
-set_tests_properties(whetstone PROPERTIES TIMEOUT 300)
+set_tests_properties(whetstone PROPERTIES TIMEOUT 30)
 
 install(TARGETS whetstone DESTINATION sw)

@@ -25,7 +25,8 @@ set(CMAKE_C_COMPILER   ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
 
-set(CMAKE_C_FLAGS "-mhard-mul -mhard-div -mhard-float -O3 ${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -mhard-mul -mhard-div")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mhard-float -mdouble-float")
 
 add_subdirectory(coremark)
 add_subdirectory(dhrystone)
