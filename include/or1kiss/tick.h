@@ -43,27 +43,27 @@ namespace or1kiss {
         u32 m_ttcr;
 
     public:
-        inline u32 get_ttmr() const { return m_ttmr; }
-        inline u32 get_ttcr() const { return m_ttcr; }
+        u32 get_ttmr() const { return m_ttmr; }
+        u32 get_ttcr() const { return m_ttcr; }
 
-        inline void set_ttmr(u32 v) {
+        void set_ttmr(u32 v) {
             m_ttmr = v;
             update(0);
         }
 
-        inline void set_ttcr(u32 v) {
+        void set_ttcr(u32 v) {
             m_ttcr = v;
             m_done = false;
             update(0);
         }
 
-        inline bool enabled()     const { return m_ttmr >> 30; }
-        inline bool irq_enabled() const { return m_ttmr & TM_IE; }
-        inline bool irq_pending() const { return m_ttmr & TM_IP; }
+        bool enabled()     const { return m_ttmr >> 30; }
+        bool irq_enabled() const { return m_ttmr & TM_IE; }
+        bool irq_pending() const { return m_ttmr & TM_IP; }
 
-        inline u32 limit()     const { return bits32(m_ttmr, 27, 0); }
-        inline u32 current()   const { return bits32(m_ttcr, 27, 0); }
-        inline u64 next_tick() const {
+        u32 limit()     const { return bits32(m_ttmr, 27, 0); }
+        u32 current()   const { return bits32(m_ttcr, 27, 0); }
+        u64 next_tick() const {
             if (current() < limit())
                 return limit() - current();
             else
@@ -73,7 +73,7 @@ namespace or1kiss {
         tick();
         virtual ~tick();
 
-        void update(u64 = 1);
+        void update(u64 delta = 1);
     };
 
 }

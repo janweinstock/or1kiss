@@ -31,51 +31,39 @@ namespace or1kiss {
         /* Nothing to do */
     }
 
-    void tick::update(u64 _delta) {
+    void tick::update(u64 delta) {
         timer_mode mode = static_cast<timer_mode>(m_ttmr & 0xc0000000);
-        if (mode == TM_D)
+        if (mode == TM_D || m_done)
             return;
 
-        u32 delta = static_cast<u32>(_delta);
-        u32 limit = bits32(m_ttmr, 27, 0);
-        u32 count = bits32(m_ttcr, 27, 0);
+        u64 lim = limit();
+        u64 cur = current();
 
         bool irq_enabled = m_ttmr & TM_IE;
         bool irq_set = false;
 
         switch (mode) {
         case TM_RS:
-            printf("TIMER MODE RESET\n");
-            if ((count < limit) && ((count + delta) >= limit)) {
+            if (cur < lim && cur + delta >= lim) {
                 irq_set = true;
                 m_ttcr = 0;
-            } else
+            } else {
                 m_ttcr += delta;
+            }
             break;
 
         case TM_OS:
-            printf("TIMER MODE ONESHOT\n");
-            if (!m_done) {
-                if ((count < limit) && ((count + delta) >= limit)) {
-                    irq_set = true;
-                    m_ttcr = limit;
-                    m_done = true;
-                } else
-                    m_ttcr += delta;
+            if (cur < lim && cur + delta >= lim) {
+                m_done = irq_set = true;
+                m_ttcr = lim;
+            } else {
+                m_ttcr += delta;
             }
             break;
 
         case TM_CT:
-            //if (irq_enabled && (delta > limit)) {
-            //    printf("Warning: delta exceeds limit (0x%08x > 0x%08x; 0x%08x)\n", delta, limit, count);
-            //    printf("         next tick 0x%08llx\n", next_tick());
-            //}
-
-            if ((count < limit) && ((count + delta) >= limit))
-                irq_set = true;
+            irq_set = cur < lim && cur + delta >= lim;
             m_ttcr += delta;
-            //if (irq_enabled && (count > limit))
-            //    printf("Warning: TIMER COUNT > LIMIT (0x%08x > 0x%08x)\n", count, limit);
             break;
 
         default:
