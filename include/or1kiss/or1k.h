@@ -222,6 +222,15 @@ namespace or1kiss {
         bool overlaps(const struct _watchpoint& wp) const;
     } watchpoint;
 
+    typedef struct _watchpoint_event {
+        u32 addr;
+        u32 size;
+        u64 wval;
+
+        bool iswr;
+        bool hit;
+    } watchpoint_event;
+
     inline bool watchpoint::overlaps(u32 addr, u32 size) const {
         return addr < (this->addr + this->size) && this->addr < (addr + size);
     }
@@ -311,7 +320,7 @@ namespace or1kiss {
         vector<watchpoint> m_watchpoints_r;
         vector<watchpoint> m_watchpoints_w;
 
-        bool m_watchpoint_hit;
+        watchpoint_event m_wp_event;
 
         bool m_trace_enabled;
         u32  m_trace_addr;
@@ -705,12 +714,14 @@ namespace or1kiss {
         vector<watchpoint>  get_watchpoints_r();
         vector<watchpoint>  get_watchpoints_w();
 
+        bool get_watchpoint_event(watchpoint_event& event) const;
+
         void trace(ostream& = std::cout);
         void trace(const string&);
     };
 
     inline bool or1k::watchpoint_hit() const {
-        return m_watchpoint_hit;
+        return m_wp_event.hit;
     }
 
     inline bool or1k::is_interrupt_pending() const {
@@ -907,6 +918,13 @@ namespace or1kiss {
 
     inline std::vector<watchpoint> or1k::get_watchpoints_w() {
         return m_watchpoints_w;
+    }
+
+    inline bool or1k::get_watchpoint_event(watchpoint_event& event) const {
+        if (!m_wp_event.hit)
+            return false;
+        event = m_wp_event;
+        return true;
     }
 
 }

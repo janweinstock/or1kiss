@@ -37,7 +37,7 @@ namespace or1kiss {
         doze();
 
         while (m_cycles < m_limit) {
-            m_watchpoint_hit = false;
+            m_wp_event.hit = false;
             m_stop_requested = false;
             m_break_requested = false;
 
@@ -85,7 +85,7 @@ namespace or1kiss {
                 if (unlikely(m_break_requested))
                     break;
 
-                if (unlikely(m_watchpoint_hit))
+                if (unlikely(m_wp_event.hit))
                     break;
             }
 
@@ -142,14 +142,27 @@ namespace or1kiss {
 
         // Check if we hit a watchpoint
         if (!req.is_debug() && req.is_dmem()) {
+            bool hit = false;
             if (unlikely(!m_watchpoints_r.empty() && req.is_read())) {
                 for (auto wp : m_watchpoints_r)
-                    m_watchpoint_hit |= wp.overlaps(req.addr, req.size);
+                    hit |= wp.overlaps(req.addr, req.size);
             }
 
             if (unlikely(!m_watchpoints_w.empty() && req.is_write())) {
                 for (auto wp : m_watchpoints_w)
-                    m_watchpoint_hit |= wp.overlaps(req.addr, req.size);
+                    hit |= wp.overlaps(req.addr, req.size);
+            }
+
+            if (unlikely(hit)) {
+                m_wp_event.hit  = true;
+                m_wp_event.addr = req.addr;
+                m_wp_event.size = req.size;
+                m_wp_event.iswr = req.is_write();
+                m_wp_event.wval = 0;
+                if (req.is_write()) {
+                    size_t sz = min<size_t>(sizeof(m_wp_event.wval), req.size);
+                    memcpy(&m_wp_event.wval, req.data, sz);
+                }
             }
         }
 
@@ -532,7 +545,7 @@ namespace or1kiss {
         m_breakpoints(),
         m_watchpoints_r(),
         m_watchpoints_w(),
-        m_watchpoint_hit(false),
+        m_wp_event({}),
         m_trace_enabled(false),
         m_trace_addr(0),
         m_user_trace_stream(NULL),
