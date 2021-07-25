@@ -41,7 +41,7 @@ jobs:
     - name: Configure
       run: |
         export PATH=$(pwd)/cross-compiler/or1k-elf/bin:$PATH
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFTL_BUILD_TESTS=ON -DFTL_BUILD_EXAMPLES=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
