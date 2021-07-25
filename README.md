@@ -8,7 +8,7 @@ achieves around 10-50 MIPS. While the repository also provides a standalone
 simulator, `or1kiss` has been primarily designed to be embedded into system
 level simulators, e.g. SystemC and TLM based virtual platforms.
 
-[![Build Status](https://travis-ci.org/janweinstock/or1kiss.svg?branch=master)](https://travis-ci.org/janweinstock/or1kiss)
+[![Build Status](https://github.com/janweinstock/or1kiss/actions/workflows/cmake.yml/badge.svg)](https://github.com/janweinstock/or1kiss/actions/workflows/cmake.yml)
 
 ----
 ## Build & Installation

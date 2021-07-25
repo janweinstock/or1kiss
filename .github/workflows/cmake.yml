@@ -1,0 +1,50 @@
+name: cmake
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Setup libelf
+      run: sudo apt-get install libelf-dev
+
+    - name: Setup cross-compiler
+      id: cross-compiler
+      uses: actions/cache@v2
+      with:
+        path: cross-compiler
+        key: cross-compiler-${{runner.os}}
+
+    - name: Download cross-compiler
+      working-directory: ${{github.workspace}}/cross-compiler
+      if: steps.cross-compiler.outputs.cache-hit != 'true'
+      run: |
+        release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
+        wget --quiet https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
+        tar -xzf $release
+
+    - name: Configure
+      run: |
+        export PATH=$(pwd)/cross-compiler/or1k-elf/bin:$PATH
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFTL_BUILD_TESTS=ON -DFTL_BUILD_EXAMPLES=ON
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
