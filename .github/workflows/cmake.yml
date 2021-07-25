@@ -30,9 +30,10 @@ jobs:
         key: cross-compiler-${{runner.os}}
 
     - name: Download cross-compiler
-      working-directory: ${{github.workspace}}/cross-compiler
       if: steps.cross-compiler.outputs.cache-hit != 'true'
       run: |
+        mkdir cross-compiler
+        cd cross-compiler
         release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
         wget --quiet https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
         tar -xzf $release
