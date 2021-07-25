@@ -39,7 +39,7 @@ jobs:
         tar -xzf $release
 
     - name: Configure cross-compiler
-      run: echo "$(pwd)/DEPENDS/or1k-elf/bin" >> $GITHUB_PATH
+      run: echo ${{github.workspace}}/cross-compiler/or1k-elf/bin >> $GITHUB_PATH
 
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
