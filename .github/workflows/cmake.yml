@@ -38,10 +38,11 @@ jobs:
         wget --quiet https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
         tar -xzf $release
 
+    - name: Configure cross-compiler
+      run: echo "$(pwd)/DEPENDS/or1k-elf/bin" >> $GITHUB_PATH
+
     - name: Configure
-      run: |
-        export PATH=$(pwd)/cross-compiler/or1k-elf/bin:$PATH
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -49,3 +50,4 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
+
