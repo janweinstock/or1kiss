@@ -23,34 +23,34 @@
 
 namespace or1kiss {
 
-    typedef std::int8_t  s8;
-    typedef std::int16_t s16;
-    typedef std::int32_t s32;
-    typedef std::int64_t s64;
+typedef std::int8_t s8;
+typedef std::int16_t s16;
+typedef std::int32_t s32;
+typedef std::int64_t s64;
 
-    typedef std::uint8_t  u8;
-    typedef std::uint16_t u16;
-    typedef std::uint32_t u32;
-    typedef std::uint64_t u64;
+typedef std::uint8_t u8;
+typedef std::uint16_t u16;
+typedef std::uint32_t u32;
+typedef std::uint64_t u64;
 
-    using std::min;
-    using std::max;
-    using std::numeric_limits;
-    using std::isnan;
-    using std::isinf;
+using std::min;
+using std::max;
+using std::numeric_limits;
+using std::isnan;
+using std::isinf;
 
-    using std::pair;
-    using std::string;
-    using std::vector;
+using std::pair;
+using std::string;
+using std::vector;
 
-    using std::ostream;
-    using std::istream;
-    using std::fstream;
-    using std::ifstream;
-    using std::ofstream;
+using std::ostream;
+using std::istream;
+using std::fstream;
+using std::ifstream;
+using std::ofstream;
 
-    using std::stringstream;
+using std::stringstream;
 
-}
+} // namespace or1kiss
 
 #endif

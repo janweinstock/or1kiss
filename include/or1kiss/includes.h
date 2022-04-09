@@ -23,10 +23,6 @@
 #error Please compile with c++11
 #endif
 
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
-
 #include <string>
 #include <vector>
 #include <algorithm>

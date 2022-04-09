@@ -16,30 +16,17 @@
  *                                                                            *
  ******************************************************************************/
 
-#ifndef OR1KISS_H
-#define OR1KISS_H
+#ifndef OR1KISS_VERSION_H
+#define OR1KISS_VERSION_H
 
-#include "or1kiss/version.h"
+#define OR1KISS_VERSION_MAJOR    @PROJECT_VERSION_MAJOR@
+#define OR1KISS_VERSION_MINOR    @PROJECT_VERSION_MINOR@
+#define OR1KISS_VERSION_PATCH    @PROJECT_VERSION_PATCH@
 
-#include "or1kiss/includes.h"
-#include "or1kiss/types.h"
-#include "or1kiss/utils.h"
-#include "or1kiss/exception.h"
-#include "or1kiss/bitops.h"
+#define OR1KISS_GIT_REV          "@OR1KISS_GIT_REV@"
+#define OR1KISS_GIT_REV_SHORT    "@OR1KISS_GIT_REV_SHORT@"
 
-#include "or1kiss/endian.h"
-#include "or1kiss/env.h"
-#include "or1kiss/mmu.h"
-#include "or1kiss/spr.h"
-#include "or1kiss/tick.h"
-#include "or1kiss/insn.h"
-#include "or1kiss/decode.h"
-#include "or1kiss/disasm.h"
-
-#include "or1kiss/elf.h"
-#include "or1kiss/rsp.h"
-#include "or1kiss/gdb.h"
-
-#include "or1kiss/or1k.h"
+#define OR1KISS_VERSION          @OR1KISS_VERSION_NO@
+#define OR1KISS_VERSION_STRING   "@OR1KISS_VERSION_STRING@"
 
 #endif

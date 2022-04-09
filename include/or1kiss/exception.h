@@ -22,39 +22,39 @@
 #include "or1kiss/includes.h"
 #include "or1kiss/types.h"
 
-#define OR1KISS_ERROR(...) do {\
-        throw or1kiss::exception(__FILE__, __LINE__, __VA_ARGS__);\
+#define OR1KISS_ERROR(...)                                         \
+    do {                                                           \
+        throw or1kiss::exception(__FILE__, __LINE__, __VA_ARGS__); \
     } while (0)
 
 namespace or1kiss {
 
-    class exception: public std::exception
-    {
-    private:
-        int    m_code;
-        string m_file;
-        int    m_line;
-        string m_text;
-        string m_what;
+class exception : public std::exception
+{
+private:
+    int m_code;
+    string m_file;
+    int m_line;
+    string m_text;
+    string m_what;
 
-        exception(); // Hide default constructor
+public:
+    exception() = delete;
+    exception(const exception&);
+    exception(const char*, int, const char*, ...);
 
-    public:
-        exception(const exception&);
-        exception(const char*, int, const char*, ...);
+    virtual ~exception() noexcept = default;
 
-        virtual ~exception() throw() { /* Nothing to do */ }
+    exception& operator=(const exception&);
 
-        exception& operator = (const exception&);
+    inline int get_exit_code() const { return m_code; }
+    inline const char* get_msg() const { return m_text.c_str(); }
+    inline const char* get_file_name() const { return m_file.c_str(); }
+    inline int get_line_number() const { return m_line; }
 
-        inline int         get_exit_code()   const { return m_code; }
-        inline const char* get_msg()         const { return m_text.c_str(); }
-        inline const char* get_file_name()   const { return m_file.c_str(); }
-        inline int         get_line_number() const { return m_line; }
+    virtual const char* what() const throw() { return m_what.c_str(); }
+};
 
-        virtual const char* what() const throw() { return m_what.c_str(); }
-    };
-
-}
+} // namespace or1kiss
 
 #endif

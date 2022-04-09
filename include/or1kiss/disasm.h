@@ -26,9 +26,9 @@
 
 namespace or1kiss {
 
-    void   disassemble(ostream& os, u32 insn);
-    string disassemble(u32 insn);
+void disassemble(ostream& os, u32 insn);
+string disassemble(u32 insn);
 
-}
+} // namespace or1kiss
 
 #endif

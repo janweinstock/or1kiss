@@ -1,6 +1,8 @@
+#!/bin/bash -e
+
  ##############################################################################
  #                                                                            #
- # Copyright 2018 Jan Henrik Weinstock                                        #
+ # Copyright 2022 Jan Henrik Weinstock                                        #
  #                                                                            #
  # Licensed under the Apache License, Version 2.0 (the "License");            #
  # you may not use this file except in compliance with the License.           #
@@ -15,25 +17,26 @@
  # limitations under the License.                                             #
  #                                                                            #
  ##############################################################################
- 
-find_path(LIBELF_INCLUDE_DIRS NAMES "libelf.h"
-          HINTS $ENV{LIBELF_HOME}/include /usr/include)
 
-find_library(LIBELF_LIBRARIES NAMES elf "libelf.a"
-             HINTS $ENV{LIBELF_HOME}/lib /usr/lib /lib)
+home="$(cd $(dirname $(dirname ${BASH_SOURCE[0]})) &>/dev/null && pwd)"
 
-find_library(LIBZ_LIBRARIES NAMES z "libz.a"
-             HINTS $ENV{LIBZ_HOME}/lib /usr/lib /lib)
+linter=$(which clang-tidy)
+bindir=$home/BUILD
+builds=$@
 
-list(APPEND LIBELF_LIBRARIES ${LIBZ_LIBRARIES})
+[ -z "$builds" ] && builds="DEBUG RELEASE ASAN"
 
-include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBELF DEFAULT_MSG
-                                  LIBELF_LIBRARIES
-                                  LIBELF_INCLUDE_DIRS)
+for type in $builds; do (
+    prefix=$home/BUILD/$type
+    build=$prefix/.BUILD
 
-mark_as_advanced(LIBELF_INCLUDE_DIRS LIBELF_LIBRARIES)
+    cmake -B $build -G Ninja             \
+          -DCMAKE_BUILD_TYPE=$type       \
+          -DCMAKE_INSTALL_PREFIX=$prefix \
+          -DOR1KISS_BUILD_SIM=ON         \
+          -DOR1KISS_BUILD_SW=ON          \
+          -DOR1KISS_LINTER=$linter       \
+          $home
 
-#message(STATUS "LIBELF_FOUND        " ${LIBELF_FOUND})
-#message(STATUS "LIBELF_INCLUDE_DIRS " ${LIBELF_INCLUDE_DIRS})
-#message(STATUS "LIBELF_LIBRARIES    " ${LIBELF_LIBRARIES})
+    cmake --build $build -j $(nproc) -- install
+) done

@@ -39,29 +39,51 @@ void usage(const char* name) {
 }
 
 int main(int argc, char** argv) {
-    char* elffile = NULL;
-    char* binary = NULL;
-    char* tracefile = NULL;
-    unsigned short debugport = 0;
-    unsigned int memsize = 0x08000000; // 128MB
-    unsigned int ninsns = 0;
-    bool show_warn = false;
+    char* elffile                   = NULL;
+    char* binary                    = NULL;
+    char* tracefile                 = NULL;
+    unsigned short debugport        = 0;
+    unsigned int memsize            = 0x08000000; // 128MB
+    unsigned int ninsns             = 0;
+    bool show_warn                  = false;
     or1kiss::decode_cache_size dcsz = or1kiss::DECODE_CACHE_SIZE_8M;
 
     int c; // parse command line
     while ((c = getopt(argc, argv, "e:b:t:p:m:i:vwxz")) != -1) {
-        switch(c) {
-        case 'e': elffile   = optarg; break;
-        case 'b': binary    = optarg; break;
-        case 't': tracefile = optarg; break;
-        case 'p': debugport = atoi(optarg); break;
-        case 'm': memsize   = atoi(optarg); break;
-        case 'i': ninsns    = atoi(optarg); break;
-        case 'v': puts("CTEST_FULL_OUTPUT"); break;
-        case 'w': show_warn = !show_warn; break;
-        case 'z': dcsz      = or1kiss::DECODE_CACHE_OFF; break;
-        case 'h': usage(argv[0]); return EXIT_SUCCESS;
-        default : usage(argv[0]); return EXIT_FAILURE;
+        switch (c) {
+        case 'e':
+            elffile = optarg;
+            break;
+        case 'b':
+            binary = optarg;
+            break;
+        case 't':
+            tracefile = optarg;
+            break;
+        case 'p':
+            debugport = atoi(optarg);
+            break;
+        case 'm':
+            memsize = atoi(optarg);
+            break;
+        case 'i':
+            ninsns = atoi(optarg);
+            break;
+        case 'v':
+            puts("CTEST_FULL_OUTPUT");
+            break;
+        case 'w':
+            show_warn = !show_warn;
+            break;
+        case 'z':
+            dcsz = or1kiss::DECODE_CACHE_OFF;
+            break;
+        case 'h':
+            usage(argv[0]);
+            return EXIT_SUCCESS;
+        default:
+            usage(argv[0]);
+            return EXIT_FAILURE;
         }
     }
 
@@ -107,8 +129,8 @@ int main(int argc, char** argv) {
         }
 
         gettimeofday(&t2, NULL);
-        double t = (t2.tv_sec  - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 1e-6;
-        double mips = sim.get_num_instructions() / t / 1e6;
+        double t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 1e-6;
+        double mips     = sim.get_num_instructions() / t / 1e6;
         double duration = sim.get_num_cycles() / (double)sim.get_clock();
 
         printf("simulation exit\n");

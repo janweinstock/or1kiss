@@ -16,19 +16,22 @@
  #                                                                            #
  ##############################################################################
 
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR or1k)
-set(CMAKE_EXECUTABLE_SUFFIX ".elf")
+find_package(PkgConfig QUIET)
+pkg_check_modules(PKGCFG_LIBELF QUIET libelf)
 
-set(TOOLCHAIN_PREFIX or1k-elf-)
-set(CMAKE_C_COMPILER   ${TOOLCHAIN_PREFIX}gcc)
-set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
-set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
+find_path(LIBELF_INCLUDE_DIRS NAMES "libelf.h"
+          HINTS $ENV{LIBELF_HOME}/include ${PKGCFG_LIBELF_INCLUDE_DIRS})
 
-set(CMAKE_C_FLAGS "-mhard-mul -mhard-div -mhard-float -mdouble-float" CACHE STRING "" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "" FORCE)
-set(CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "" FORCE)
+find_library(LIBELF_LIBRARIES NAMES elf "elf"
+             HINTS $ENV{LIBELF_HOME}/lib ${PKGCFG_LIBELF_LIBRARY_DIRS})
 
-add_subdirectory(coremark)
-add_subdirectory(dhrystone)
-add_subdirectory(whetstone)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(LibELF
+    REQUIRED_VARS LIBELF_INCLUDE_DIRS LIBELF_LIBRARIES
+    VERSION_VAR   PKGCFG_LIBELF_VERSION)
+
+mark_as_advanced(LIBELF_INCLUDE_DIRS LIBELF_LIBRARIES)
+
+#message(STATUS "LIBELF_FOUND        " ${LIBELF_FOUND})
+#message(STATUS "LIBELF_INCLUDE_DIRS " ${LIBELF_INCLUDE_DIRS})
+#message(STATUS "LIBELF_LIBRARIES    " ${LIBELF_LIBRARIES})

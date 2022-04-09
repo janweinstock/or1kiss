@@ -23,51 +23,42 @@
 #include "or1kiss/utils.h"
 #include "or1kiss/exception.h"
 
-#define OR1KISS_RSP_MAX_PACKET_SIZE  0x4000u
+#define OR1KISS_RSP_MAX_PACKET_SIZE 0x4000u
 
 namespace or1kiss {
 
-    class rsp
-    {
-    private:
-        bool m_trace;
-        int  m_socket;
-        int  m_connection;
-        struct sockaddr_in m_addr;
+class rsp
+{
+private:
+    bool m_trace;
+    int m_socket;
+    int m_connection;
+    struct sockaddr_in m_addr;
 
-        // Disabled
-        rsp(const rsp&);
+public:
+    bool is_open() const { return m_socket != -1; }
+    bool is_connected() const { return m_connection != -1; }
+    unsigned short get_port() const { return ntohs(m_addr.sin_port); }
 
-    public:
-        inline bool is_open() const {
-            return m_socket != -1;
-        }
+    rsp();
+    rsp(unsigned short);
+    virtual ~rsp();
 
-        inline bool is_connected() const {
-            return m_connection != -1;
-        }
+    rsp(const rsp&) = delete;
 
-        inline unsigned short get_port() const {
-            return ntohs(m_addr.sin_port);
-        }
+    void open(unsigned short);
+    void close();
 
-        rsp();
-        rsp(unsigned short);
-        virtual ~rsp();
+    bool peek();
 
-        void open(unsigned short);
-        void close();
+    char recv_char();
+    void send_char(char);
 
-        bool peek();
+    string recv();
+    void send(const string&);
+    void send(const char* fmt, ...);
+};
 
-        char recv_char();
-        void send_char(char);
-
-        std::string recv();
-        void send(const std::string&);
-        void send(const char* fmt, ...);
-    };
-
-}
+} // namespace or1kiss
 
 #endif

@@ -26,56 +26,56 @@
 
 namespace or1kiss {
 
-    enum timer_mode {
-        TM_IP = 1 << 28, /* Interrupt Pending */
-        TM_IE = 1 << 29, /* Interrupt Enabled */
-        TM_D  = 0 << 30, /* Timer Disabled */
-        TM_RS = 1 << 30, /* Timer Mode Restart */
-        TM_OS = 2 << 30, /* Timer Mode One-Shot */
-        TM_CT = 3 << 30  /* Timer Mode Continue */
-    };
+enum timer_mode {
+    TM_IP = 1 << 28, /* Interrupt Pending */
+    TM_IE = 1 << 29, /* Interrupt Enabled */
+    TM_D  = 0 << 30, /* Timer Disabled */
+    TM_RS = 1 << 30, /* Timer Mode Restart */
+    TM_OS = 2 << 30, /* Timer Mode One-Shot */
+    TM_CT = 3 << 30  /* Timer Mode Continue */
+};
 
-    class tick
-    {
-    private:
-        bool m_done;
-        u32 m_ttmr;
-        u32 m_ttcr;
+class tick
+{
+private:
+    bool m_done;
+    u32 m_ttmr;
+    u32 m_ttcr;
 
-    public:
-        u32 get_ttmr() const { return m_ttmr; }
-        u32 get_ttcr() const { return m_ttcr; }
+public:
+    u32 get_ttmr() const { return m_ttmr; }
+    u32 get_ttcr() const { return m_ttcr; }
 
-        void set_ttmr(u32 v) {
-            m_ttmr = v;
-            update(0);
-        }
+    void set_ttmr(u32 v) {
+        m_ttmr = v;
+        update(0);
+    }
 
-        void set_ttcr(u32 v) {
-            m_ttcr = v;
-            m_done = false;
-            update(0);
-        }
+    void set_ttcr(u32 v) {
+        m_ttcr = v;
+        m_done = false;
+        update(0);
+    }
 
-        bool enabled()     const { return m_ttmr >> 30; }
-        bool irq_enabled() const { return m_ttmr & TM_IE; }
-        bool irq_pending() const { return m_ttmr & TM_IP; }
+    bool enabled() const { return m_ttmr >> 30; }
+    bool irq_enabled() const { return m_ttmr & TM_IE; }
+    bool irq_pending() const { return m_ttmr & TM_IP; }
 
-        u32 limit()     const { return bits32(m_ttmr, 27, 0); }
-        u32 current()   const { return bits32(m_ttcr, 27, 0); }
-        u64 next_tick() const {
-            if (current() < limit())
-                return limit() - current();
-            else
-                return 0x0fffffffull - current() + limit() + 1ull;
-        }
+    u32 limit() const { return bits32(m_ttmr, 27, 0); }
+    u32 current() const { return bits32(m_ttcr, 27, 0); }
+    u64 next_tick() const {
+        if (current() < limit())
+            return limit() - current();
+        else
+            return 0x0fffffffull - current() + limit() + 1ull;
+    }
 
-        tick();
-        virtual ~tick();
+    tick();
+    virtual ~tick();
 
-        void update(u64 delta = 1);
-    };
+    void update(u64 delta = 1);
+};
 
-}
+} // namespace or1kiss
 
 #endif

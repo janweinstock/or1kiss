@@ -20,49 +20,50 @@
 
 namespace or1kiss {
 
-    exception::exception(const exception& copy):
-        std::exception(),
-        m_code(copy.m_code),
-        m_file(copy.m_file),
-        m_line(copy.m_line),
-        m_text(copy.m_text),
-        m_what(copy.m_what) {
-        /* Nothing to do */
-    }
-
-    exception::exception(const char* file, int line, const char* fmt, ...):
-        std::exception(),
-        m_code(EXIT_FAILURE),
-        m_file(file),
-        m_line(line),
-        m_text(),
-        m_what() {
-        va_list args;
-        va_start(args, fmt);
-        std::size_t sz = std::vsnprintf(NULL, 0, fmt, args) + 1;
-        va_end(args);
-
-        char* str = new char[sz];
-        va_start(args, fmt);
-        std::vsnprintf(str, sz, fmt, args);
-        va_end(args);
-
-        m_text = std::string(str);
-        delete [] str;
-
-        std::stringstream ss;
-        ss << "or1kiss exception at " << m_file << ":" << line << " '" << m_text << "'";
-        m_what = ss.str();
-    }
-
-    exception& exception::operator = (const exception& other) {
-        m_code = other.m_code;
-        m_file = other.m_file;
-        m_line = other.m_line;
-        m_text = other.m_text;
-        m_what = other.m_what;
-
-        return *this;
-    }
-
+exception::exception(const exception& copy):
+    std::exception(),
+    m_code(copy.m_code),
+    m_file(copy.m_file),
+    m_line(copy.m_line),
+    m_text(copy.m_text),
+    m_what(copy.m_what) {
+    // nothing to do
 }
+
+exception::exception(const char* file, int line, const char* fmt, ...):
+    std::exception(),
+    m_code(EXIT_FAILURE),
+    m_file(file),
+    m_line(line),
+    m_text(),
+    m_what() {
+    va_list args;
+    va_start(args, fmt);
+    std::size_t sz = std::vsnprintf(NULL, 0, fmt, args) + 1;
+    va_end(args);
+
+    char* str = new char[sz];
+    va_start(args, fmt);
+    std::vsnprintf(str, sz, fmt, args);
+    va_end(args);
+
+    m_text = std::string(str);
+    delete[] str;
+
+    std::stringstream ss;
+    ss << "or1kiss exception at " << m_file << ":" << line << " '" << m_text
+       << "'";
+    m_what = ss.str();
+}
+
+exception& exception::operator=(const exception& other) {
+    m_code = other.m_code;
+    m_file = other.m_file;
+    m_line = other.m_line;
+    m_text = other.m_text;
+    m_what = other.m_what;
+
+    return *this;
+}
+
+} // namespace or1kiss

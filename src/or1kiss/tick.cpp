@@ -20,58 +20,54 @@
 
 namespace or1kiss {
 
-    tick::tick():
-        m_done(false),
-        m_ttmr(0),
-        m_ttcr(0) {
-
-    }
-
-    tick::~tick() {
-        /* Nothing to do */
-    }
-
-    void tick::update(u64 delta) {
-        timer_mode mode = static_cast<timer_mode>(m_ttmr & 0xc0000000);
-        if (mode == TM_D || m_done)
-            return;
-
-        u64 lim = limit();
-        u64 cur = current();
-
-        bool irq_enabled = m_ttmr & TM_IE;
-        bool irq_set = false;
-
-        switch (mode) {
-        case TM_RS:
-            if (cur < lim && cur + delta >= lim) {
-                irq_set = true;
-                m_ttcr = 0;
-            } else {
-                m_ttcr += delta;
-            }
-            break;
-
-        case TM_OS:
-            if (cur < lim && cur + delta >= lim) {
-                m_done = irq_set = true;
-                m_ttcr = lim;
-            } else {
-                m_ttcr += delta;
-            }
-            break;
-
-        case TM_CT:
-            irq_set = cur < lim && cur + delta >= lim;
-            m_ttcr += delta;
-            break;
-
-        default:
-            OR1KISS_ERROR("Invalid tick timer mode (%d)", mode);
-        }
-
-        if (irq_enabled && irq_set)
-            m_ttmr |= TM_IP;
-    }
-
+tick::tick(): m_done(false), m_ttmr(0), m_ttcr(0) {
 }
+
+tick::~tick() {
+    /* Nothing to do */
+}
+
+void tick::update(u64 delta) {
+    timer_mode mode = static_cast<timer_mode>(m_ttmr & 0xc0000000);
+    if (mode == TM_D || m_done)
+        return;
+
+    u64 lim = limit();
+    u64 cur = current();
+
+    bool irq_enabled = m_ttmr & TM_IE;
+    bool irq_set     = false;
+
+    switch (mode) {
+    case TM_RS:
+        if (cur < lim && cur + delta >= lim) {
+            irq_set = true;
+            m_ttcr  = 0;
+        } else {
+            m_ttcr += delta;
+        }
+        break;
+
+    case TM_OS:
+        if (cur < lim && cur + delta >= lim) {
+            m_done = irq_set = true;
+            m_ttcr           = lim;
+        } else {
+            m_ttcr += delta;
+        }
+        break;
+
+    case TM_CT:
+        irq_set = cur < lim && cur + delta >= lim;
+        m_ttcr += delta;
+        break;
+
+    default:
+        OR1KISS_ERROR("Invalid tick timer mode (%d)", mode);
+    }
+
+    if (irq_enabled && irq_set)
+        m_ttmr |= TM_IP;
+}
+
+} // namespace or1kiss

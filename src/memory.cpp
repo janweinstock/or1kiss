@@ -21,13 +21,13 @@
 memory::memory(uint64_t size):
     or1kiss::env(or1kiss::ENDIAN_BIG),
     m_size(size),
-    m_memory(new unsigned char [size]()) {
+    m_memory(new unsigned char[size]()) {
     set_data_ptr(m_memory, 0, size - 1, 1);
     set_insn_ptr(m_memory, 0, size - 1, 0);
 }
 
 memory::~memory() {
-    delete [] m_memory;
+    delete[] m_memory;
 }
 
 bool memory::load(const char* filename) {
@@ -36,7 +36,7 @@ bool memory::load(const char* filename) {
         return false;
 
     uint64_t fsize = file.tellg();
-    fsize = std::min(fsize, m_size);
+    fsize          = std::min(fsize, m_size);
     file.seekg(0, std::ios::beg);
     file.read((char*)m_memory, fsize);
     return true;
@@ -45,8 +45,7 @@ bool memory::load(const char* filename) {
 or1kiss::response memory::transact(const or1kiss::request& req) {
     if ((req.addr + req.size) > m_size) {
         if (!req.is_debug()) {
-            fprintf(stderr,
-                    "(memory) bus error at address 0x%08" PRIx32 "\n",
+            fprintf(stderr, "(memory) bus error at address 0x%08" PRIx32 "\n",
                     req.addr);
             fflush(stderr);
             std::exit(-1);
@@ -76,7 +75,7 @@ or1kiss::response memory::transact(const or1kiss::request& req) {
     } else {
         switch (req.size) {
         case or1kiss::SIZE_BYTE:
-            *(uint8_t* )req.data = *(uint8_t* )(m_memory + req.addr);
+            *(uint8_t*)req.data = *(uint8_t*)(m_memory + req.addr);
             break;
 
         case or1kiss::SIZE_HALFWORD:

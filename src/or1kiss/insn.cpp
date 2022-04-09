@@ -20,18 +20,15 @@
 
 namespace or1kiss {
 
-    decode_cache::decode_cache(decode_cache_size size):
-        m_size(size),
-        m_mask((1 << size) - 1),
-        m_count(1 << size),
-        m_cache(NULL) {
-        m_cache = new instruction [m_count];
+decode_cache::decode_cache(decode_cache_size size):
+    m_size(size), m_mask((1 << size) - 1), m_count(1 << size), m_cache(NULL) {
+    m_cache = new instruction[m_count];
 
-        invalidate_all();
-    }
-
-    decode_cache::~decode_cache() {
-        delete [] m_cache;
-    }
-
+    invalidate_all();
 }
+
+decode_cache::~decode_cache() {
+    delete[] m_cache;
+}
+
+} // namespace or1kiss
