@@ -68,6 +68,7 @@ set_target_properties(or1kiss PROPERTIES SOVERSION "${OR1KISS_VERSION_MAJOR}")
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     install(TARGETS or1kiss DESTINATION lib)
     install(DIRECTORY ${inc}/ DESTINATION include)
+    install(DIRECTORY ${gen}/ DESTINATION include)
 
     if(OR1KISS_BUILD_SIM)
         add_executable(sim ${src}/main.cpp ${src}/memory.cpp)
