@@ -25,9 +25,11 @@ set(CMAKE_C_COMPILER   ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
 
-set(CMAKE_C_FLAGS "-mhard-mul -mhard-div -mhard-float -mdouble-float" CACHE STRING "" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "" FORCE)
-set(CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "" FORCE)
+set(CMAKE_C_FLAGS "-O3 -mhard-mul -mhard-div -mhard-float -mdouble-float")
+
+set(CMAKE_C_FLAGS_${CMAKE_BUILD_TYPE} "" CACHE STRING "" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS_${CMAKE_BUILD_TYPE} "" CACHE STRING "" FORCE)
+set(CMAKE_SHARED_LINKER_FLAGS_${CMAKE_BUILD_TYPE} "" CACHE STRING "" FORCE)
 
 add_subdirectory(coremark)
 add_subdirectory(dhrystone)

@@ -1,0 +1,56 @@
+name: asan
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  sanitize:
+    name: ${{matrix.sanitizer}}
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [ASAN, TSAN, UBSAN]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Setup libelf
+      run: sudo apt-get install libelf-dev
+
+    - name: Setup cross-compiler
+      id: cross-compiler
+      uses: actions/cache@v2
+      with:
+        path: cross-compiler
+        key: cross-compiler-${{runner.os}}
+
+    - name: Download cross-compiler
+      if: steps.cross-compiler.outputs.cache-hit != 'true'
+      run: |
+        mkdir cross-compiler
+        cd cross-compiler
+        release=or1k-elf_gcc5.3.0_binutils2.26_newlib2.4.0_gdb7.11.tgz
+        wget --quiet https://github.com/openrisc/newlib/releases/download/v2.4.0/$release
+        tar -xzf $release
+
+    - name: Configure cross-compiler
+      run: echo ${{github.workspace}}/cross-compiler/or1k-elf/bin >> $GITHUB_PATH
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.sanitizer}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON .
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.sanitizer}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{matrix.sanitizer}} --output-on-failure
+

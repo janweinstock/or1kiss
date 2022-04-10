@@ -9,6 +9,7 @@ simulator, `or1kiss` has been primarily designed to be embedded into system
 level simulators, e.g. SystemC and TLM based virtual platforms.
 
 [![Build Status](https://github.com/janweinstock/or1kiss/actions/workflows/cmake.yml/badge.svg)](https://github.com/janweinstock/or1kiss/actions/workflows/cmake.yml)
+[![Sanitizer Status](https://github.com/janweinstock/or1kiss/actions/workflows/asan.yml/badge.svg)](https://github.com/janweinstock/or1kiss/actions/workflows/asan.yml)
 [![Lint Status](https://github.com/janweinstock/or1kiss/actions/workflows/lint.yml/badge.svg)](https://github.com/janweinstock/or1kiss/actions/workflows/lint.yml)
 [![Style Check](https://github.com/janweinstock/or1kiss/actions/workflows/style.yml/badge.svg)](https://github.com/janweinstock/or1kiss/actions/workflows/style.yml)
 
