@@ -12,7 +12,6 @@ env:
 jobs:
   style:
     runs-on: ubuntu-20.04
-    name: ${{runner.name}}
 
     steps:
     - name: Checkout
