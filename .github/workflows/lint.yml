@@ -1,4 +1,4 @@
-name: cmake
+name: lint
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  cmake:
+  lint:
     runs-on: ubuntu-20.04
     name: ${{runner.name}}
 
@@ -21,7 +21,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Setup libelf
-      run: sudo apt-get install libelf-dev
+      run: sudo apt-get install libelf-dev clang-tidy
 
     - name: Setup cross-compiler
       id: cross-compiler
@@ -43,7 +43,7 @@ jobs:
       run: echo ${{github.workspace}}/cross-compiler/or1k-elf/bin >> $GITHUB_PATH
 
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON .
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DOR1KISS_BUILD_SIM=ON -DOR1KISS_BUILD_SW=ON -DOR1KISS_LINTER=clang-tidy .
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
