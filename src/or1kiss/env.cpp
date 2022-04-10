@@ -35,10 +35,6 @@ env::env(endian e):
     // nothing to do
 }
 
-env::~env() {
-    // nothing to do
-}
-
 response env::exclusive_access(unsigned char* ptr, request& req) {
     if (req.is_read()) {
         m_excl_addr = req.addr;

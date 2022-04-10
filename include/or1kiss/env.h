@@ -209,9 +209,8 @@ public:
     // binaries that you load. Since the ISS is working with host endian,
     // the port will handle all the necessary endianess conversion for you.
     env(endian e);
-    virtual ~env();
-
     env(const env&) = delete;
+    virtual ~env()  = default;
 
     virtual u64 sleep(u64 cycles) { return 0; }
     virtual response transact(const request& req) = 0;
