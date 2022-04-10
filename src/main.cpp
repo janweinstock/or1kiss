@@ -16,6 +16,7 @@
  *                                                                            *
  ******************************************************************************/
 
+#include <memory>
 #include <iostream>
 #include <exception>
 #include <time.h>
@@ -97,9 +98,9 @@ int main(int argc, char** argv) {
         memory mem(memsize);
         or1kiss::or1k sim(&mem, dcsz);
 
-        or1kiss::elf* elf = NULL;
+        std::shared_ptr<or1kiss::elf> elf = NULL;
         if (elffile) {
-            elf = new or1kiss::elf(elffile);
+            elf = std::make_shared<or1kiss::elf>(elffile);
             elf->load(&mem);
         }
 
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
         } else {
             or1kiss::gdb debugger(sim, debugport);
             if (elf)
-                debugger.set_elf(elf);
+                debugger.set_elf(elf.get());
             debugger.show_warnings(show_warn);
             if (ninsns > 0)
                 debugger.step(ninsns);
