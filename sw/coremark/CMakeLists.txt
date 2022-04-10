@@ -25,6 +25,6 @@ add_executable(coremark core_list_join.c core_main.c core_matrix.c
                         core_portme.c core_state.c core_util.c clock.c)
 
 add_test(NAME coremark COMMAND ../../or1kiss -e coremark.elf)
-set_tests_properties(coremark PROPERTIES TIMEOUT 30)
+set_tests_properties(coremark PROPERTIES TIMEOUT 60)
 
 install(TARGETS coremark DESTINATION sw)
