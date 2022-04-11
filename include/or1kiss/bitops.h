@@ -47,6 +47,11 @@ inline u32 bits32(u32 v, int l, int r) {
     return (v << (31 - l)) >> (31 - l + r);
 }
 
+// bit32 extracts the value of the bit at position idx
+inline u32 bit32(u32 v, size_t idx) {
+    return (v >> idx) & 1;
+}
+
 // sign_extend32 performs a sign extension on the value v,
 // thereby interpreting bit i as the sign bit. Bits 31..i will be
 // set to 1 if bit i is one, otherwise they will be set to zero.

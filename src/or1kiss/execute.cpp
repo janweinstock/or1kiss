@@ -1024,95 +1024,118 @@ void or1k::execute_orfpx32_sfle(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_add(instruction* ci) {
+    u32 d = 1 + bit32(ci->insn, 10);
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
     dest.d = src1.d + src2.d;
 
     *(ci->dest + 0) = dest.lo;
-    *(ci->dest + 1) = dest.hi;
+    *(ci->dest + d) = dest.hi;
 
     reset_fp_round_mode();
     reset_fp_flags(dest.d);
 }
 
 void or1k::execute_orfpx64_sub(instruction* ci) {
+    u32 d = 1 + bit32(ci->insn, 10);
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
     dest.d = src1.d - src2.d;
 
     *(ci->dest + 0) = dest.lo;
-    *(ci->dest + 1) = dest.hi;
+    *(ci->dest + d) = dest.hi;
 
     reset_fp_round_mode();
     reset_fp_flags(dest.d);
 }
 
 void or1k::execute_orfpx64_mul(instruction* ci) {
+    u32 d = 1 + bit32(ci->insn, 10);
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
     dest.d = src1.d * src2.d;
 
     *(ci->dest + 0) = dest.lo;
-    *(ci->dest + 1) = dest.hi;
+    *(ci->dest + d) = dest.hi;
 
     reset_fp_round_mode();
     reset_fp_flags(dest.d);
 }
 
 void or1k::execute_orfpx64_div(instruction* ci) {
+    u32 d = 1 + bit32(ci->insn, 10);
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
     dest.d = src1.d / src2.d;
 
     *(ci->dest + 0) = dest.lo;
-    *(ci->dest + 1) = dest.hi;
+    *(ci->dest + d) = dest.hi;
 
     reset_fp_round_mode();
     reset_fp_flags(dest.d);
 }
 
 void or1k::execute_orfpx64_rem(instruction* ci) {
+    u32 d = 1 + bit32(ci->insn, 10);
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
     dest.d = std::fmod(src1.d, src2.d);
 
     *(ci->dest + 0) = dest.lo;
-    *(ci->dest + 1) = dest.hi;
+    *(ci->dest + d) = dest.hi;
 
     reset_fp_round_mode();
     reset_fp_flags(dest.d);
 }
 
 void or1k::execute_orfpx64_madd(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     setup_fp_round_mode();
@@ -1123,8 +1146,10 @@ void or1k::execute_orfpx64_madd(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_itof(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+
     double_register src1, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
 
     dest.d = src1.i;
@@ -1134,8 +1159,10 @@ void or1k::execute_orfpx64_itof(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_ftoi(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+
     double_register src1, dest;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
 
     dest.i = src1.d;
@@ -1145,10 +1172,13 @@ void or1k::execute_orfpx64_ftoi(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sfeq(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
@@ -1157,10 +1187,13 @@ void or1k::execute_orfpx64_sfeq(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sfne(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
@@ -1169,10 +1202,13 @@ void or1k::execute_orfpx64_sfne(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sfgt(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
@@ -1181,10 +1217,13 @@ void or1k::execute_orfpx64_sfgt(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sfge(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
@@ -1193,10 +1232,13 @@ void or1k::execute_orfpx64_sfge(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sflt(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
@@ -1205,10 +1247,13 @@ void or1k::execute_orfpx64_sflt(instruction* ci) {
 }
 
 void or1k::execute_orfpx64_sfle(instruction* ci) {
+    u32 a = 1 + bit32(ci->insn, 9);
+    u32 b = 1 + bit32(ci->insn, 8);
+
     double_register src1, src2;
-    src1.hi = *(ci->src1 + 1);
+    src1.hi = *(ci->src1 + a);
     src1.lo = *(ci->src1 + 0);
-    src2.hi = *(ci->src2 + 1);
+    src2.hi = *(ci->src2 + b);
     src2.lo = *(ci->src2 + 0);
 
     m_status &= ~SR_F;
