@@ -90,7 +90,7 @@ elf_section::elf_section(Elf* elf, Elf_Scn* scn):
 
     Elf_Data* data      = NULL;
     unsigned int copied = 0;
-    while ((copied < shdr->sh_size) && (data = elf_getdata(scn, data))) {
+    while ((copied < shdr->sh_size) && (data = elf_rawdata(scn, data))) {
         if (data->d_buf)
             std::memcpy(m_data + copied, data->d_buf, data->d_size);
     }
