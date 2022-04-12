@@ -24,6 +24,7 @@ include(GenVersionInfo)
 include(Sanitizer)
 
 find_package(LibELF REQUIRED)
+find_package(Threads REQUIRED)
 
 option(OR1KISS_BUILD_SIM "Build the standalone simulator" ON)
 option(OR1KISS_BUILD_SW "Build sample software, requires or1k-elf-gcc" OFF)
@@ -36,7 +37,7 @@ set(gen ${CMAKE_CURRENT_BINARY_DIR}/gen)
 configure_file(${src}/or1kiss/version.h.in
                ${gen}/or1kiss/version.h @ONLY)
 
-add_library(libor1kiss STATIC
+add_library(or1kiss STATIC
             ${src}/or1kiss/decode.cpp
             ${src}/or1kiss/disasm.cpp
             ${src}/or1kiss/execute.cpp
@@ -52,31 +53,34 @@ add_library(libor1kiss STATIC
             ${src}/or1kiss/exception.cpp
             ${src}/or1kiss/tracing.cpp)
 
-target_compile_options(libor1kiss PRIVATE -Wall -Werror)
-target_compile_features(libor1kiss PRIVATE cxx_std_17)
-target_include_directories(libor1kiss PUBLIC ${inc})
-target_include_directories(libor1kiss PUBLIC ${gen})
-target_include_directories(libor1kiss PRIVATE ${src})
-target_include_directories(libor1kiss PUBLIC ${LIBELF_INCLUDE_DIRS})
-target_link_libraries(libor1kiss PUBLIC ${LIBELF_LIBRARIES})
+target_compile_options(or1kiss PRIVATE -Wall -Werror)
+target_compile_features(or1kiss PRIVATE cxx_std_17)
+target_include_directories(or1kiss PUBLIC ${inc})
+target_include_directories(or1kiss PUBLIC ${gen})
+target_include_directories(or1kiss PRIVATE ${src})
+target_include_directories(or1kiss PUBLIC ${LIBELF_INCLUDE_DIRS})
+target_link_libraries(or1kiss PUBLIC ${LIBELF_LIBRARIES})
+target_link_libraries(or1kiss PUBLIC Threads::Threads)
+target_link_libraries(or1kiss PUBLIC m)
 
-set_target_properties(libor1kiss PROPERTIES DEBUG_POSTFIX "d")
-set_target_properties(libor1kiss PROPERTIES CXX_CLANG_TIDY "${OR1KISS_LINTER}")
-set_target_properties(libor1kiss PROPERTIES VERSION "${OR1KISS_VERSION}")
-set_target_properties(libor1kiss PROPERTIES SOVERSION "${OR1KISS_VERSION_MAJOR}")
+set_target_properties(or1kiss PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties(or1kiss PROPERTIES CXX_CLANG_TIDY "${OR1KISS_LINTER}")
+set_target_properties(or1kiss PROPERTIES VERSION "${OR1KISS_VERSION}")
+set_target_properties(or1kiss PROPERTIES SOVERSION "${OR1KISS_VERSION_MAJOR}")
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    install(TARGETS libor1kiss DESTINATION lib)
+    install(TARGETS or1kiss DESTINATION lib)
     install(DIRECTORY ${inc}/ DESTINATION include)
     install(DIRECTORY ${gen}/ DESTINATION include)
 
     if(OR1KISS_BUILD_SIM)
-        add_executable(or1kiss ${src}/main.cpp ${src}/memory.cpp)
-        target_link_libraries(or1kiss libor1kiss -pthread)
-        set_target_properties(or1kiss PROPERTIES CXX_CLANG_TIDY "${OR1KISS_LINTER}")
-        set_target_properties(or1kiss PROPERTIES VERSION "${OR1KISS_VERSION}")
-        set_target_properties(or1kiss PROPERTIES SOVERSION "${OR1KISS_VERSION_MAJOR}")
-        install(TARGETS or1kiss DESTINATION bin)
+        add_executable(or1kiss-sim ${src}/main.cpp ${src}/memory.cpp)
+        target_link_libraries(or1kiss-sim or1kiss)
+        set_target_properties(or1kiss-sim PROPERTIES CXX_CLANG_TIDY "${OR1KISS_LINTER}")
+        set_target_properties(or1kiss-sim PROPERTIES VERSION "${OR1KISS_VERSION}")
+        set_target_properties(or1kiss-sim PROPERTIES SOVERSION "${OR1KISS_VERSION_MAJOR}")
+        set_target_properties(or1kiss-sim PROPERTIES OUTPUT_NAME "or1kiss")
+        install(TARGETS or1kiss-sim DESTINATION bin)
     endif()
 
     if(OR1KISS_BUILD_SW)

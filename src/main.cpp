@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
         memory mem(memsize);
         or1kiss::or1k sim(&mem, dcsz);
 
-        std::shared_ptr<or1kiss::elf> elf = NULL;
+        std::shared_ptr<or1kiss::elf> elf;
         if (elffile) {
             elf = std::make_shared<or1kiss::elf>(elffile);
             elf->load(&mem);

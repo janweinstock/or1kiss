@@ -16,10 +16,13 @@
  #                                                                            #
  ##############################################################################
 
-add_definitions(-DTIME -Wno-implicit-function-declaration -Wno-implicit-int)
 add_executable(dhrystone dhry_1.c dhry_2.c gettimeofday.c)
+target_compile_definitions(dhrystone PRIVATE -DTIME)
+target_compile_options(dhrystone PRIVATE -Wno-implicit-function-declaration)
+target_compile_options(dhrystone PRIVATE -Wno-implicit-int)
 
-add_test(NAME dhrystone COMMAND ../../or1kiss -e dhrystone.elf)
-set_tests_properties(dhrystone PROPERTIES TIMEOUT 60)
+add_test(NAME dhrystone COMMAND $<TARGET_FILE:or1kiss-sim> -e $<TARGET_FILE:dhrystone>)
+set_tests_properties(dhrystone PROPERTIES ENVIRONMENT "${ENVVARS}")
+set_tests_properties(dhrystone PROPERTIES TIMEOUT 300)
 
 install(TARGETS dhrystone DESTINATION sw)

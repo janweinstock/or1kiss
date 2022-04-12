@@ -16,11 +16,12 @@
  #                                                                            #
  ##############################################################################
 
-add_definitions(-DPRINTOUT)
 add_executable(whetstone whetstone.c gettimeofday.c)
+target_compile_definitions(whetstone PRIVATE -DPRINTOUT)
 target_link_libraries(whetstone m)
 
-add_test(NAME whetstone COMMAND ../../or1kiss -e whetstone.elf)
-set_tests_properties(whetstone PROPERTIES TIMEOUT 120)
+add_test(NAME whetstone COMMAND $<TARGET_FILE:or1kiss-sim> -e $<TARGET_FILE:whetstone>)
+set_tests_properties(whetstone PROPERTIES ENVIRONMENT "${ENVVARS}")
+set_tests_properties(whetstone PROPERTIES TIMEOUT 300)
 
 install(TARGETS whetstone DESTINATION sw)
