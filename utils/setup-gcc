@@ -20,7 +20,6 @@
 
 home="$(cd $(dirname $(dirname ${BASH_SOURCE[0]})) &>/dev/null && pwd)"
 
-linter=$(which clang-tidy)
 bindir=$home/BUILD
 builds=$@
 
@@ -30,13 +29,14 @@ for type in $builds; do (
     prefix=$home/BUILD/$type
     build=$prefix/.BUILD
 
-    cmake -B $build -G Ninja             \
-          -DCMAKE_BUILD_TYPE=$type       \
-          -DCMAKE_INSTALL_PREFIX=$prefix \
-          -DOR1KISS_BUILD_SIM=ON         \
-          -DOR1KISS_BUILD_SW=ON          \
-          -DOR1KISS_LINTER=$linter       \
+    cmake -B $build -G Ninja                 \
+          -DCMAKE_BUILD_TYPE=$type           \
+          -DCMAKE_INSTALL_PREFIX=$prefix     \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DOR1KISS_BUILD_SIM=ON             \
+          -DOR1KISS_BUILD_SW=ON              \
           $home
 
     cmake --build $build -j $(nproc) -- install
 ) done
+
