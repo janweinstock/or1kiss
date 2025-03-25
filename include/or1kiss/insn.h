@@ -27,10 +27,10 @@ namespace or1kiss {
 
 class or1k;
 
-typedef void (or1k::*execute_function)(struct _instruction*);
-typedef void (or1k::*decode_function)(struct _instruction*);
+typedef void (or1k::*execute_function)(struct instruction*);
+typedef void (or1k::*decode_function)(struct instruction*);
 
-typedef struct _instruction {
+typedef struct instruction {
     execute_function exec;
     u32 insn;
     u32 addr;

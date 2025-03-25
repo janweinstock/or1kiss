@@ -19,9 +19,9 @@
 
 namespace or1kiss {
 
-static inline mmu_access access_mask(const request& req) {
+static inline u32 access_mask(const request& req) {
     if (req.is_debug())
-        return (mmu_access)(MMU_SRE | MMU_SWE | MMU_URE | MMU_UWE);
+        return MMU_SRE | MMU_SWE | MMU_URE | MMU_UWE;
     if (req.is_imem())
         return (req.is_supervisor()) ? MMU_SXE : MMU_UXE;
     if (req.is_write())

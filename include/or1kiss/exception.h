@@ -47,10 +47,10 @@ public:
 
     exception& operator=(const exception&);
 
-    inline int get_exit_code() const { return m_code; }
-    inline const char* get_msg() const { return m_text.c_str(); }
-    inline const char* get_file_name() const { return m_file.c_str(); }
-    inline int get_line_number() const { return m_line; }
+    int get_exit_code() const { return m_code; }
+    const char* get_msg() const { return m_text.c_str(); }
+    const char* get_file_name() const { return m_file.c_str(); }
+    int get_line_number() const { return m_line; }
 
     virtual const char* what() const throw() { return m_what.c_str(); }
 };

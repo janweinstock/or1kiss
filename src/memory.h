@@ -38,8 +38,8 @@ public:
     memory(uint64_t size);
     virtual ~memory();
 
-    inline unsigned char* get_ptr() const { return m_memory; }
-    inline uint64_t get_size() const { return m_size; }
+    unsigned char* get_ptr() const { return m_memory; }
+    uint64_t get_size() const { return m_size; }
 
     bool load(const char*);
 
