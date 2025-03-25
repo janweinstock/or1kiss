@@ -144,9 +144,7 @@ public:
 
     elf_symbol* find_function(u64 virt_addr) const;
 
-    const vector<elf_section*>& get_sections() const {
-        return m_sections;
-    }
+    const vector<elf_section*>& get_sections() const { return m_sections; }
 
     const vector<elf_symbol*>& get_symbols() const { return m_symbols; }
 

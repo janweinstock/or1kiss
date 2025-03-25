@@ -28,7 +28,7 @@
 #define OR1KISS_PAGE_SIZE         (1 << OR1KISS_PAGE_BITS)
 #define OR1KISS_PAGE_MASK         (OR1KISS_PAGE_SIZE - 1)
 #define OR1KISS_PAGE_NUMBER(addr) ((addr) >> OR1KISS_PAGE_BITS)
-#define OR1KISS_PAGE_OFFSET(addr) ((addr)&OR1KISS_PAGE_MASK)
+#define OR1KISS_PAGE_OFFSET(addr) ((addr) & OR1KISS_PAGE_MASK)
 #define OR1KISS_PAGE_ALIGN(addr)  ((addr) & ~OR1KISS_PAGE_MASK)
 #define OR1KISS_PAGE_BOUNDARY(addr) \
     (OR1KISS_PAGE_ALIGN((addr) + OR1KISS_PAGE_SIZE))
@@ -39,7 +39,7 @@
 #define OR1KISS_TLB_MAX_SETS (128)
 #define OR1KISS_TLB_MAX_REGS (2 * OR1KISS_TLB_MAX_SETS * OR1KISS_TLB_MAX_WAYS)
 
-#define OR1KISS_TLB_MR(way, set) ((way)*OR1KISS_TLB_MAX_SETS * 2 + set)
+#define OR1KISS_TLB_MR(way, set) ((way) * OR1KISS_TLB_MAX_SETS * 2 + set)
 #define OR1KISS_TLB_TR(way, set) \
     (OR1KISS_TLB_MR(way, set) + OR1KISS_TLB_MAX_SETS)
 

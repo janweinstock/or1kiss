@@ -310,7 +310,8 @@ instruction* or1k::fetch() {
     insn.addr = m_ireq.addr;
     insn.insn = m_insn;
 
-    (this->*m_decode_table[code])(&insn);
+    auto handler = m_decode_table[code];
+    (this->*handler)(&insn);
     m_compiles++;
 
     // Compilation successful

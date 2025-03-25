@@ -208,10 +208,10 @@ void rsp::send(const char* fmt, ...) {
 
     va_list args;
     va_start(args, fmt);
-    int len = std::vsnprintf(NULL, 0, fmt, args);
+    int len = std::vsnprintf(NULL, 0, fmt, args) + 1;
     va_end(args);
 
-    char* packet = new char[len + 5];
+    char* packet = new char[len + 4];
     packet[0]    = '$';
 
     va_start(args, fmt);
