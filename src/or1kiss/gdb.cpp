@@ -223,13 +223,13 @@ void gdb::handle_rcmd(const char* command) {
         OR1KISS_ERROR("RCMD length not a multiple of 2 (%d)", len);
 
     int len2 = len / 2;
-    char s[len2 + 1];
+    vector<char> s(len2 + 1);
     for (int i = 0; i < len2; i++)
         s[i] = (char2int(cmd[2 * i]) << 4) | char2int(cmd[2 * i + 1]);
     s[len2] = '\0';
 
     u32 reg;
-    if (sscanf(s, "readspr %4x", &reg) == 1) {
+    if (sscanf(s.data(), "readspr %4x", &reg) == 1) {
         u32 val = m_iss.get_spr(reg, true);
         char buf[9];
         char resp[17];
@@ -244,13 +244,13 @@ void gdb::handle_rcmd(const char* command) {
     }
 
     u32 val;
-    if (sscanf(s, "writespr %4x %8x", &reg, &val) == 2) {
+    if (sscanf(s.data(), "writespr %4x %8x", &reg, &val) == 2) {
         m_iss.set_spr(reg, val, true);
         m_rsp.send("OK");
         return;
     }
 
-    OR1KISS_ERROR("unknown remote command '%s'", s);
+    OR1KISS_ERROR("unknown remote command '%s'", s.data());
 }
 
 void gdb::handle_reg_read(const char* command) {
