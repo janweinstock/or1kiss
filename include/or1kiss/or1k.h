@@ -889,7 +889,7 @@ inline float or1k::get_decode_cache_hit_rate() const {
     if (hits == 0)
         return 0.0f;
 
-    return (float)(hits) / m_instructions;
+    return (float)hits / m_instructions;
 }
 
 inline void or1k::trigger_tlb_miss(u32 addr) {

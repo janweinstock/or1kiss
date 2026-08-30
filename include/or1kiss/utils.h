@@ -26,12 +26,12 @@ namespace or1kiss {
 
 // helper for code generation
 inline int likely(int x) {
-    return __builtin_expect(!!(x), 1);
+    return __builtin_expect(!!x, 1);
 }
 
 // helper for code generation
 inline int unlikely(int x) {
-    return __builtin_expect(!!(x), 0);
+    return __builtin_expect(!!x, 0);
 }
 
 // compare-and-swap for exclusive memory access
